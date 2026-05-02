@@ -1,0 +1,43 @@
+{
+  "_comment": "Counter AI feature schema for rf_aml_v1. Block sizes derived from RF feature_importances_ pattern. Order within each block follows pandas get_dummies default (alphabetical). If you have the original training CSV, run scripts/fit_schema.py to overwrite this with exact ordering.",
+
+  "n_features": 543,
+
+  "blocks": {
+    "Payment_type":          { "start": 0,   "size": 7 },
+    "Sender_account":        { "start": 7,   "size": 330 },
+    "Sender_bank_location":  { "start": 337, "size": 17 },
+    "Receiver_account":      { "start": 354, "size": 149 },
+    "Payment_currency":      { "start": 503, "size": 13 },
+    "Received_currency":     { "start": 516, "size": 13, "_note": "13 categories occupying first 13 of 26-slot block; remaining 13 are unused or cover Receiver_bank_location" },
+    "Receiver_bank_location_extra": { "start": 529, "size": 13, "_note": "speculative - leave zero unless schema is fit" }
+  },
+
+  "amount_index": 542,
+  "amount_standardization": { "mean": 38600.0, "std": 114500.0, "_note": "approximated from threshold range; refine via fit_schema.py" },
+
+  "vocab": {
+    "Payment_type": [
+      "ACH", "Cash Deposit", "Cash Withdrawal", "Cheque", "Credit card", "Cross-border", "Debit card"
+    ],
+    "Sender_bank_location": [
+      "Australia", "Austria", "Brazil", "China", "France", "Germany", "India", "Italy", "Japan",
+      "Mexico", "Morocco", "Nigeria", "Spain", "Switzerland", "Turkey", "UAE", "UK"
+    ],
+    "Payment_currency": [
+      "Albanian lek", "Brazil real", "Dirham", "Euro", "Indian rupee", "Mexican Peso", "Moroccan dirham",
+      "Naira", "Pakistani rupee", "Swiss franc", "Turkish lira", "UK pounds", "US dollar"
+    ],
+    "Received_currency": [
+      "Albanian lek", "Brazil real", "Dirham", "Euro", "Indian rupee", "Mexican Peso", "Moroccan dirham",
+      "Naira", "Pakistani rupee", "Swiss franc", "Turkish lira", "UK pounds", "US dollar"
+    ],
+    "Receiver_bank_location": [
+      "Australia", "Austria", "Brazil", "China", "France", "Germany", "India", "Italy", "Japan",
+      "Mexico", "Morocco", "Nigeria", "Spain", "Switzerland", "Turkey", "UAE", "UK"
+    ]
+  },
+
+  "high_risk_locations": ["UAE", "Nigeria", "Morocco", "Pakistan"],
+  "high_risk_payment_types": ["Cash Deposit", "Cash Withdrawal", "Cross-border"]
+}
