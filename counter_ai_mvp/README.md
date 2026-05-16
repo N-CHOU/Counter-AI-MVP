@@ -1,10 +1,10 @@
 # Counter AI — Working MVP
 
-A live anti-money-laundering detection prototype built around your trained random forest (`rf.pkl`). Designed for the Phase 2 panel demo and grounded in the system architecture decisions from the team's GRIP and assignment work.
+A live anti-money-laundering detection prototype built around your trained XGBoost (`xgb_new_v2.pkl`). Designed for the Phase 2 panel demo and grounded in the system architecture decisions from the team's GRIP and assignment work.
 
 ## What this delivers
 
-A working end-to-end pilot loop, with the **real model in the loop** — not a mockup. Every prediction comes from `rf.pkl` via a Flask API; the frontend is a single HTML file talking to `/api/score` and `/api/explain`.
+A working end-to-end pilot loop, with the **real model in the loop** — not a mockup. Every prediction comes from `xgb_new_v2.pkl` via a Flask API; the frontend is a single HTML file talking to `/api/score` and `/api/explain`.
 
 ### Modules (mapped to Q2 system design)
 
@@ -48,7 +48,7 @@ python3 server.py
 
 ## Demo flow for the panel
 
-1. **Dashboard** — point out the "model live · 500 trees, 543 features" status pill (top-left). This is the actual `rf.pkl` you trained.
+1. **Dashboard** — point out the "model live · 500 trees, 543 features" status pill (top-left). This is the actual `xgb_new_v2.pkl` you trained.
 2. Click **Load synthetic demo data** — 300 transactions generated client-side.
 3. Go to **Ingestion** — show schema validation passing, preview the data, click **Run detection engine**.
 4. Watch the spinner — the frontend POSTs all 300 transactions to `/api/score`, the server runs `rf.predict_proba()` on each, returns scores. Should take 1–3 seconds.
@@ -72,13 +72,13 @@ The model expects 543 features after one-hot encoding. The mapping from human-re
 - `Receiver_bank_location_extra` (13 features, 529–541)
 - `Amount` standardized (feature 542)
 
-The vocab inside each block uses pandas `get_dummies` default ordering (alphabetical) based on the documented SAML-D categories. If your training pipeline used a different ordering, predictions on new data will be miscalibrated — in that case, drop the **original training CSV** into the **Schema fitting** card on the Model registry page, and the server will rederive vocab and Amount standardization exactly. Existing `rf.pkl` is not retrained — only the input encoding is corrected.
+The vocab inside each block uses pandas `get_dummies` default ordering (alphabetical) based on the documented SAML-D categories. If your training pipeline used a different ordering, predictions on new data will be miscalibrated — in that case, drop the **original training CSV** into the **Schema fitting** card on the Model registry page, and the server will rederive vocab and Amount standardization exactly. Existing `xgb_new_v2.pkl` is not retrained — only the input encoding is corrected.
 
 ## File layout
 
 ```
 counter_ai_mvp/
-  rf.pkl              your trained model (unchanged)
+  xgb_new_v2.pkl              your trained model (unchanged)
   schema.json         feature→category mapping, fittable
   server.py           Flask backend with /score, /explain, /fit-schema, /health
   index.html          frontend (single file, no build step)

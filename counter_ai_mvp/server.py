@@ -1,7 +1,7 @@
 """
 Counter AI MVP backend.
 
-Loads the trained random forest (rf.pkl) and exposes:
+Loads the trained XGBoost (xgb_new_v2.pkl) and exposes:
   POST /api/score   - Score a batch of transactions
   POST /api/explain - SHAP-style feature contributions for one transaction
   POST /api/fit-schema - Re-derive vocab from a training CSV (optional)
@@ -21,7 +21,7 @@ import joblib
 from flask import Flask, request, jsonify, send_from_directory
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(ROOT, "rf.pkl")
+MODEL_PATH = os.path.join(ROOT, "xgb_new_v2.pkl")
 SCHEMA_PATH = os.path.join(ROOT, "schema.json")
 
 print("[Counter AI] Loading model from", MODEL_PATH)
