@@ -2,493 +2,1192 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Counter AI — AML Detection MVP</title>
+<title>Counter AI — Financial Crime Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FAFAF7;
+    --bg: #F4F5F7;
     --surface: #FFFFFF;
-    --surface-2: #F1EFE8;
-    --text-1: #2C2C2A;
-    --text-2: #5F5E5A;
-    --text-3: #888780;
-    --border: rgba(60, 52, 137, 0.12);
-    --border-strong: rgba(60, 52, 137, 0.25);
-    --blue-50: #E6F1FB; --blue-600: #185FA5; --blue-800: #0C447C;
-    --teal-50: #E1F5EE; --teal-600: #0F6E56; --teal-800: #085041;
-    --amber-50: #FAEEDA; --amber-600: #854F0B; --amber-800: #633806;
-    --red-50:  #FCEBEB; --red-600: #A32D2D; --red-800: #791F1F;
-    --green-50: #EAF3DE; --green-600: #3B6D11; --green-800: #27500A;
-    --purple-50: #EEEDFE; --purple-600: #534AB7; --purple-800: #3C3489;
-    --gray-50: #F1EFE8; --gray-600: #5F5E5A;
-    --radius: 8px;
-    --radius-lg: 12px;
+    --surface-2: #F8F9FB;
+    --surface-3: #EEF0F4;
+    --sidebar-bg: #0F1729;
+    --sidebar-hover: #1A2540;
+    --sidebar-active: #1E2D52;
+    --sidebar-text: #A8B1C7;
+    --sidebar-text-active: #FFFFFF;
+    --sidebar-border: #1F2A44;
+    --text-1: #0F1729;
+    --text-2: #4A5568;
+    --text-3: #8893A8;
+    --text-4: #B0B9C9;
+    --border: #E1E5EC;
+    --border-strong: #C8CFDB;
+    --accent: #1F4690;
+    --accent-hover: #163365;
+    --accent-light: #E8EFFA;
+    --critical: #B91C1C;
+    --critical-bg: #FEF2F2;
+    --critical-border: #FCA5A5;
+    --high: #C2410C;
+    --high-bg: #FFF7ED;
+    --high-border: #FDBA74;
+    --medium: #A16207;
+    --medium-bg: #FEFCE8;
+    --medium-border: #FDE047;
+    --low: #15803D;
+    --low-bg: #F0FDF4;
+    --low-border: #86EFAC;
+    --info: #1E40AF;
+    --info-bg: #EFF6FF;
+    --info-border: #93C5FD;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    background: var(--bg); color: var(--text-1); font-size: 14px; line-height: 1.5; }
-  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
-  .sidebar { background: var(--surface); border-right: 0.5px solid var(--border); padding: 20px 0; }
-  .brand { padding: 0 20px 20px; border-bottom: 0.5px solid var(--border); }
-  .brand-title { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
-  .brand-sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-  .health-pill { display:inline-block; margin-top:8px; padding: 2px 8px; border-radius: 12px;
-    font-size: 11px; background: var(--green-50); color: var(--green-800); }
-  .health-pill.bad { background: var(--red-50); color: var(--red-800); }
-  .nav { padding: 12px 0; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 20px; cursor: pointer;
-    color: var(--text-2); font-size: 13px; border-left: 2px solid transparent; transition: background 0.1s; }
-  .nav-item:hover { background: var(--surface-2); }
-  .nav-item.active { color: var(--text-1); background: var(--purple-50);
-    border-left-color: var(--purple-600); font-weight: 500; }
-  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); flex-shrink: 0; }
-  .nav-item.active .nav-dot { background: var(--purple-600); }
-  .nav-section { padding: 12px 20px 6px; font-size: 11px; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.05em; }
-  .main { padding: 28px 36px; max-width: 1200px; }
-  .page-head { margin-bottom: 24px; }
-  .page-title { font-size: 22px; font-weight: 500; margin: 0 0 4px; letter-spacing: -0.01em; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text-1);
+    font-size: 13px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace; }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  .sidebar {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--sidebar-border);
+  }
+  .brand {
+    padding: 20px 20px 18px;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+  .brand-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 4px;
+  }
+  .brand-mark {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+    letter-spacing: -0.02em;
+  }
+  .brand-name { color: white; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  .brand-tagline { color: var(--text-4); font-size: 11px; margin-top: 2px;
+    text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .health-row {
+    margin-top: 12px; display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-4);
+  }
+  .health-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #22C55E;
+  }
+  .health-dot.bad { background: #EF4444; }
+
+  .nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+  .nav-section {
+    padding: 16px 20px 6px;
+    font-size: 10px; font-weight: 600;
+    color: #5E6B86;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .nav-item {
+    display: flex; align-items: center;
+    padding: 8px 20px;
+    cursor: pointer;
+    color: var(--sidebar-text);
+    font-size: 13px;
+    transition: background 0.1s, color 0.1s;
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { background: var(--sidebar-hover); color: white; }
+  .nav-item.active {
+    background: var(--sidebar-active);
+    color: white;
+    border-left-color: #3B82F6;
+    font-weight: 500;
+  }
+  .nav-icon {
+    width: 16px; height: 16px;
+    margin-right: 10px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--sidebar-border);
+    color: var(--sidebar-text-active);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  .sidebar-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--sidebar-border);
+    font-size: 11px;
+    color: var(--text-4);
+  }
+  .user-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .user-avatar {
+    width: 28px; height: 28px;
+    background: #2D3F66;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 11px;
+  }
+  .user-info { line-height: 1.3; }
+  .user-name { color: white; font-size: 12px; font-weight: 500; }
+  .user-role { color: var(--text-4); font-size: 10px; }
+
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .breadcrumb { font-size: 12px; color: var(--text-3); }
+  .breadcrumb span { color: var(--text-1); font-weight: 500; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+  .content {
+    flex: 1; overflow-y: auto;
+    padding: 24px 28px;
+  }
+
+  .page-head { margin-bottom: 20px; }
+  .page-title {
+    font-size: 20px; font-weight: 600; margin: 0 0 4px;
+    letter-spacing: -0.01em; color: var(--text-1);
+  }
   .page-sub { font-size: 13px; color: var(--text-2); margin: 0; }
   .page { display: none; }
   .page.active { display: block; }
 
-  .card { background: var(--surface); border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 16px; }
-  .card-title { font-size: 14px; font-weight: 500; margin: 0 0 12px;
-    display: flex; align-items: center; justify-content: space-between; }
-  .card-sub { font-size: 12px; color: var(--text-2); margin: -8px 0 12px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface-2);
+  }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--text-1); margin: 0; }
+  .card-sub { font-size: 11px; color: var(--text-2); margin: 2px 0 0; }
+  .card-body { padding: 18px; }
+  .card-body.tight { padding: 0; }
 
-  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-  .metric { background: var(--surface-2); border-radius: var(--radius); padding: 14px 16px; }
-  .metric-label { font-size: 12px; color: var(--text-2); margin-bottom: 4px; }
-  .metric-value { font-size: 22px; font-weight: 500; letter-spacing: -0.02em; }
-  .metric-delta { font-size: 11px; color: var(--green-600); margin-top: 2px; }
-  .metric-delta.neg { color: var(--red-600); }
+  .metrics {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px; margin-bottom: 20px;
+  }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .metric-label {
+    font-size: 11px; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .metric-value {
+    font-size: 24px; font-weight: 600;
+    letter-spacing: -0.02em;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-1);
+  }
+  .metric-delta { font-size: 11px; color: var(--text-2); margin-top: 4px; }
+  .metric-delta.up { color: var(--low); }
+  .metric-delta.down { color: var(--critical); }
 
-  button, .btn { border: 0.5px solid var(--border-strong); background: var(--surface);
-    border-radius: var(--radius); padding: 8px 14px; font-size: 13px; cursor: pointer;
-    font-family: inherit; color: var(--text-1); transition: background 0.1s; }
-  button:hover, .btn:hover { background: var(--surface-2); }
+  button, .btn {
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    border-radius: 5px;
+    padding: 7px 13px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text-1);
+    transition: all 0.1s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  button:hover, .btn:hover { background: var(--surface-3); border-color: var(--text-3); }
   button:active, .btn:active { transform: scale(0.98); }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-primary { background: var(--purple-600); color: white; border-color: var(--purple-600); }
-  .btn-primary:hover { background: var(--purple-800); }
-  .btn-danger { color: var(--red-600); border-color: rgba(163,45,45,0.3); }
-  .btn-success { color: var(--green-600); border-color: rgba(59,109,17,0.3); }
+  .btn-primary {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+  .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-danger { color: var(--critical); border-color: var(--critical-border); }
+  .btn-danger:hover { background: var(--critical-bg); }
+  .btn-success { color: var(--low); border-color: var(--low-border); }
+  .btn-success:hover { background: var(--low-bg); }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-sm { padding: 4px 9px; font-size: 11px; }
 
-  .uploader { border: 1.5px dashed var(--border-strong); border-radius: var(--radius-lg);
-    padding: 36px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--surface-2); }
-  .uploader:hover { background: var(--purple-50); border-color: var(--purple-600); }
-  .uploader.drag { background: var(--purple-50); border-color: var(--purple-600); }
-  .uploader-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-  .uploader-sub { font-size: 12px; color: var(--text-2); }
+  .uploader {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 6px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--surface-2);
+  }
+  .uploader:hover, .uploader.drag {
+    background: var(--accent-light);
+    border-color: var(--accent);
+  }
+  .uploader-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--text-1); }
+  .uploader-sub { font-size: 11px; color: var(--text-2); }
   .uploader input { display: none; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; font-weight: 500; color: var(--text-2); font-size: 12px;
-    padding: 10px 12px; border-bottom: 0.5px solid var(--border); background: var(--surface-2); }
-  td { padding: 10px 12px; border-bottom: 0.5px solid var(--border); }
-  tr.alert-row { cursor: pointer; }
-  tr.alert-row:hover td { background: var(--surface-2); }
-  tr.alert-row.selected td { background: var(--purple-50); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-3);
+    font-size: 11px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    position: sticky; top: 0;
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-1);
+    vertical-align: middle;
+  }
+  tbody tr:hover td { background: var(--surface-2); }
+  tbody tr.clickable { cursor: pointer; }
+  tbody tr.selected td { background: var(--accent-light); }
 
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
-  .pill-high { background: var(--red-50); color: var(--red-800); }
-  .pill-med  { background: var(--amber-50); color: var(--amber-800); }
-  .pill-low  { background: var(--green-50); color: var(--green-800); }
-  .pill-info { background: var(--blue-50); color: var(--blue-800); }
-  .pill-neutral { background: var(--gray-50); color: var(--text-1); }
-  .pill-purple { background: var(--purple-50); color: var(--purple-800); }
-  .pill-teal { background: var(--teal-50); color: var(--teal-800); }
+  .pill {
+    display: inline-flex; align-items: center;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 500;
+    border: 1px solid transparent;
+    line-height: 1.4;
+  }
+  .pill-critical { background: var(--critical-bg); color: var(--critical); border-color: var(--critical-border); }
+  .pill-high { background: var(--high-bg); color: var(--high); border-color: var(--high-border); }
+  .pill-medium { background: var(--medium-bg); color: var(--medium); border-color: var(--medium-border); }
+  .pill-low { background: var(--low-bg); color: var(--low); border-color: var(--low-border); }
+  .pill-info { background: var(--info-bg); color: var(--info); border-color: var(--info-border); }
+  .pill-neutral { background: var(--surface-3); color: var(--text-2); border-color: var(--border); }
+  .pill-dot::before {
+    content: ""; display: inline-block; width: 5px; height: 5px;
+    border-radius: 50%; background: currentColor; margin-right: 5px;
+  }
+
+  .score-cell {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+  }
+  .score-bar {
+    width: 40px; height: 4px;
+    background: var(--surface-3);
+    border-radius: 2px; overflow: hidden;
+  }
+  .score-bar-fill { height: 100%; border-radius: 2px; }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .grid-3-equal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
-  .shap-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; }
-  .shap-name { width: 220px; color: var(--text-2); }
-  .shap-track { flex: 1; height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; position: relative; }
-  .shap-fill { height: 100%; background: var(--purple-600); border-radius: 4px; }
-  .shap-fill.neg { background: var(--teal-600); }
-  .shap-val { width: 70px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-1); }
+  .shap-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; font-size: 12px; }
+  .shap-name { flex: 0 0 200px; color: var(--text-2); font-size: 11px; }
+  .shap-name b { color: var(--text-1); font-weight: 500; font-size: 12px; }
+  .shap-track { flex: 1; height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; position: relative; }
+  .shap-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+  .shap-fill.neg { background: var(--low); }
+  .shap-val { flex: 0 0 60px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-1); }
 
-  .reason { background: var(--purple-50); border-left: 2px solid var(--purple-600);
-    padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 13px;
-    color: var(--purple-800); margin: 12px 0; line-height: 1.5; }
-  .counterfactual { background: var(--teal-50); border-left: 2px solid var(--teal-600);
-    padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 13px;
-    color: var(--teal-800); margin: 12px 0; line-height: 1.5; }
+  .reason-box {
+    background: var(--info-bg);
+    border-left: 3px solid var(--info);
+    padding: 12px 14px;
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: var(--text-1);
+    margin: 12px 0;
+    line-height: 1.5;
+  }
+  .reason-box.cf {
+    background: var(--low-bg);
+    border-left-color: var(--low);
+  }
+  .reason-label {
+    display: block;
+    font-size: 10px; font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
 
-  select, input[type="text"], input[type="number"], textarea { width: 100%; padding: 8px 10px;
-    border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-size: 13px;
-    font-family: inherit; background: var(--surface); color: var(--text-1); }
+  select, input[type="text"], input[type="number"], input[type="date"], textarea {
+    width: 100%; padding: 7px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 5px; font-size: 12px;
+    font-family: inherit; background: var(--surface);
+    color: var(--text-1);
+    transition: border-color 0.1s, box-shadow 0.1s;
+  }
+  select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(31,70,144,0.1);
+  }
   textarea { min-height: 60px; resize: vertical; line-height: 1.5; }
-  label { font-size: 12px; color: var(--text-2); display: block; margin-bottom: 4px; }
+  label {
+    font-size: 11px;
+    color: var(--text-2);
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  label.required::after { content: " *"; color: var(--critical); }
   .field { margin-bottom: 12px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-  input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; appearance: none;
-    background: var(--surface-2); border-radius: 2px; outline: none; }
-  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none;
-    width: 16px; height: 16px; border-radius: 50%; background: var(--purple-600); cursor: pointer; border: none; }
-  input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%;
-    background: var(--purple-600); cursor: pointer; border: none; }
+  input[type="range"] {
+    width: 100%; height: 4px;
+    -webkit-appearance: none; appearance: none;
+    background: var(--surface-3); border-radius: 2px; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
 
   .threshold-row { display: flex; align-items: center; gap: 16px; }
   .threshold-row > input[type="range"] { flex: 1; }
-  .threshold-val { font-size: 18px; font-weight: 500; min-width: 60px; }
+  .threshold-val {
+    font-size: 18px; font-weight: 600;
+    min-width: 64px; text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+  }
 
-  .audit-row { display: grid; grid-template-columns: 160px 110px 1fr; gap: 12px;
-    padding: 10px 0; font-size: 12px; border-bottom: 0.5px solid var(--border); }
-  .audit-time { color: var(--text-2); font-variant-numeric: tabular-nums; }
-  .audit-actor { color: var(--text-1); }
+  .audit-row {
+    display: grid;
+    grid-template-columns: 160px 110px 1fr;
+    gap: 16px;
+    padding: 10px 16px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .audit-time { color: var(--text-3); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .audit-actor { color: var(--text-1); font-weight: 500; }
   .audit-event { color: var(--text-2); }
   .audit-event b { color: var(--text-1); font-weight: 500; }
 
-  .empty { text-align: center; padding: 40px; color: var(--text-2); font-size: 13px; }
-  .step-row { display: flex; gap: 8px; align-items: center; padding: 8px 0; font-size: 13px; }
-  .step-num { width: 22px; height: 22px; background: var(--surface-2); color: var(--text-2);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 500; flex-shrink: 0; }
-  .step-num.done { background: var(--green-50); color: var(--green-800); }
-  .step-num.active { background: var(--purple-600); color: white; }
+  .empty {
+    text-align: center; padding: 36px;
+    color: var(--text-3); font-size: 12px;
+  }
 
-  .gov-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .gov-tile { background: var(--surface-2); border-radius: var(--radius); padding: 14px 16px; }
-  .gov-tile-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
-  .gov-tile-sub { font-size: 11px; color: var(--text-2); }
-  .gov-tile-status { font-size: 11px; margin-top: 8px; color: var(--green-600); font-weight: 500; }
+  .step-row {
+    display: flex; gap: 12px; align-items: center;
+    padding: 9px 0; font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .step-row:last-child { border-bottom: none; }
+  .step-num {
+    width: 22px; height: 22px;
+    background: var(--surface-3);
+    color: var(--text-2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .step-num.done { background: var(--low); color: white; }
+  .step-num.active { background: var(--accent); color: white; }
+  .step-text { color: var(--text-1); font-size: 12px; }
 
-  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-1); color: white;
-    padding: 12px 18px; border-radius: var(--radius); font-size: 13px; transform: translateY(100px);
-    opacity: 0; transition: all 0.2s; z-index: 100; max-width: 320px; }
+  .gov-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  .gov-tile {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .gov-tile-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text-1); }
+  .gov-tile-sub { font-size: 11px; color: var(--text-2); line-height: 1.4; }
+  .gov-tile-meta {
+    font-size: 10px; margin-top: 8px;
+    color: var(--low);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .gov-tile-meta::before {
+    content: ""; display: inline-block; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--low);
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--text-1); color: white;
+    padding: 11px 16px;
+    border-radius: 5px;
+    font-size: 12px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.2s;
+    z-index: 100;
+    max-width: 320px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
   .toast.show { transform: translateY(0); opacity: 1; }
 
-  .progress { height: 4px; background: var(--surface-2); border-radius: 2px;
-    overflow: hidden; margin: 8px 0 12px; }
-  .progress-fill { height: 100%; background: var(--purple-600); transition: width 0.3s; }
+  .progress {
+    height: 4px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 8px 0 12px;
+  }
+  .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
 
-  .feature-imp-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 12px; }
-  .feature-imp-name { width: 220px; color: var(--text-1); }
-  .feature-imp-track { flex: 1; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
-  .feature-imp-fill { height: 100%; background: var(--blue-600); }
-  .feature-imp-val { width: 60px; text-align: right; color: var(--text-2); font-variant-numeric: tabular-nums; }
-
-  .spinner { display:inline-block; width: 14px; height: 14px; border: 2px solid var(--border-strong);
-    border-top-color: var(--purple-600); border-radius: 50%; animation: spin 0.8s linear infinite;
-    vertical-align: middle; margin-right: 8px; }
+  .spinner {
+    display:inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  .kv-table { width: 100%; }
+  .kv-table td {
+    padding: 6px 0;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .kv-table td:first-child {
+    color: var(--text-3); width: 180px;
+    text-transform: uppercase; font-size: 10px;
+    letter-spacing: 0.04em; font-weight: 600;
+  }
+  .kv-table td:last-child { color: var(--text-1); }
+
+  .toolbar {
+    display: flex; gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    align-items: center;
+  }
+  .toolbar input[type="text"] { max-width: 280px; }
+  .toolbar-spacer { flex: 1; }
+
+  .customer-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 11px;
+    border: 1px solid var(--info-border);
+  }
+  .customer-cell {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .customer-cell-info { display: flex; flex-direction: column; }
+  .customer-cell-name { font-size: 12px; font-weight: 500; color: var(--text-1); line-height: 1.3; }
+  .customer-cell-id { font-size: 11px; color: var(--text-3); font-family: 'JetBrains Mono', monospace; line-height: 1.3; }
+
+  .hit-item {
+    display: flex; gap: 10px; align-items: center;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    margin-bottom: 6px;
+  }
+  .hit-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .hit-icon.critical { background: var(--critical-bg); color: var(--critical); }
+  .hit-icon.high { background: var(--high-bg); color: var(--high); }
+  .hit-icon.medium { background: var(--medium-bg); color: var(--medium); }
+  .hit-icon.low { background: var(--low-bg); color: var(--low); }
+  .hit-body { flex: 1; font-size: 12px; }
+  .hit-list { font-weight: 500; }
+  .hit-match { color: var(--text-2); font-size: 11px; }
+
+  .history-row {
+    display: flex; gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .history-row:last-child { border-bottom: none; }
+  .history-time { color: var(--text-3); font-family: 'JetBrains Mono', monospace; min-width: 130px; }
+  .history-action { font-weight: 500; color: var(--text-1); min-width: 120px; }
+  .history-detail { color: var(--text-2); flex: 1; }
+
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .tab {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.1s;
+  }
+  .tab:hover { color: var(--text-1); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .feature-imp-row { display: flex; align-items: center; gap: 12px; padding: 6px 0; font-size: 12px; }
+  .feature-imp-name { width: 240px; color: var(--text-1); font-size: 11px; }
+  .feature-imp-track { flex: 1; height: 5px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+  .feature-imp-fill { height: 100%; background: var(--accent); }
+  .feature-imp-val { width: 60px; text-align: right; color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  .scrollable { max-height: 540px; overflow-y: auto; }
 </style>
 </head>
 <body>
 
 <div class="app">
+
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-title">Counter AI</div>
-      <div class="brand-sub">AML detection · MVP</div>
-      <div class="health-pill" id="health-pill">connecting…</div>
+      <div class="brand-logo">
+        <div class="brand-mark">C</div>
+        <div>
+          <div class="brand-name">Counter AI</div>
+          <div class="brand-tagline">Financial Crime Platform</div>
+        </div>
+      </div>
+      <div class="health-row">
+        <span class="health-dot" id="health-dot"></span>
+        <span id="health-text">Connecting…</span>
+      </div>
     </div>
+
     <nav class="nav">
-      <div class="nav-section">Workflow</div>
-      <div class="nav-item active" data-page="dashboard"><span class="nav-dot"></span>Dashboard</div>
-      <div class="nav-item" data-page="ingestion"><span class="nav-dot"></span>Ingestion</div>
-      <div class="nav-item" data-page="alerts"><span class="nav-dot"></span>Alert queue <span id="alert-badge" style="margin-left:auto;font-size:11px;color:var(--text-3);"></span></div>
-      <div class="nav-section">Risk</div>
-      <div class="nav-item" data-page="thresholds"><span class="nav-dot"></span>Threshold control</div>
-      <div class="nav-item" data-page="model"><span class="nav-dot"></span>Model registry</div>
-      <div class="nav-section">Governance</div>
-      <div class="nav-item" data-page="governance"><span class="nav-dot"></span>Governance pack</div>
-      <div class="nav-item" data-page="audit"><span class="nav-dot"></span>Audit log</div>
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" data-page="dashboard">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="6"/><rect x="9" y="2" width="5" height="3"/><rect x="9" y="7" width="5" height="7"/><rect x="2" y="10" width="5" height="4"/></svg>
+        Dashboard
+      </div>
+
+      <div class="nav-section">KYC &amp; CDD</div>
+      <div class="nav-item" data-page="onboarding">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-5 6-5s6 2 6 5"/></svg>
+        Customer onboarding
+      </div>
+      <div class="nav-item" data-page="customers">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="2"/><circle cx="11" cy="6" r="1.5"/><path d="M2 13c0-2 2-3.5 4-3.5s4 1.5 4 3.5"/><path d="M9 13c0-1.5 1.5-2.5 2.5-2.5s2.5 1 2.5 2.5"/></svg>
+        Customer directory
+        <span class="nav-badge" id="cust-badge">0</span>
+      </div>
+
+      <div class="nav-section">Transaction monitoring</div>
+      <div class="nav-item" data-page="ingestion">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v10M4 8l4 4 4-4M2 14h12"/></svg>
+        Ingestion
+      </div>
+      <div class="nav-item" data-page="alerts">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5l3.5-.5z"/></svg>
+        Alert queue
+        <span class="nav-badge" id="alert-badge">0</span>
+      </div>
+
+      <div class="nav-section">Risk &amp; governance</div>
+      <div class="nav-item" data-page="thresholds">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="8" r="2"/><circle cx="11" cy="8" r="2"/><path d="M2 8h1M7 8h2M13 8h1"/></svg>
+        Threshold control
+      </div>
+      <div class="nav-item" data-page="model">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 2v3M8 11v3M2 8h3M11 8h3"/></svg>
+        Model registry
+      </div>
+      <div class="nav-item" data-page="governance">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1L2 4v5c0 3 2.5 5.5 6 6 3.5-.5 6-3 6-6V4l-6-3z"/></svg>
+        Governance pack
+      </div>
+      <div class="nav-item" data-page="audit">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="10" height="12"/><path d="M5 5h6M5 8h6M5 11h4"/></svg>
+        Audit log
+      </div>
     </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar">CA</div>
+        <div class="user-info">
+          <div class="user-name">Compliance Analyst</div>
+          <div class="user-role">Pilot demo · v0.2</div>
+        </div>
+      </div>
+    </div>
   </aside>
 
   <main class="main">
-
-    <section id="page-dashboard" class="page active">
-      <div class="page-head">
-        <h1 class="page-title">Dashboard</h1>
-        <p class="page-sub">Live model: <span id="health-detail">checking…</span></p>
+    <div class="topbar">
+      <div class="breadcrumb" id="breadcrumb">Counter AI / <span>Dashboard</span></div>
+      <div class="topbar-actions">
+        <span id="topbar-meta" style="font-size:11px;color:var(--text-3);"></span>
       </div>
+    </div>
 
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Transactions ingested</div><div class="metric-value" id="m-ingested">0</div></div>
-        <div class="metric"><div class="metric-label">Alerts raised</div><div class="metric-value" id="m-alerts">0</div></div>
-        <div class="metric"><div class="metric-label">False-positive rate</div><div class="metric-value" id="m-fpr">—</div><div class="metric-delta" id="m-fpr-delta"></div></div>
-        <div class="metric"><div class="metric-label">Pending analyst review</div><div class="metric-value" id="m-pending">0</div></div>
-      </div>
+    <div class="content">
 
-      <div class="card">
-        <h3 class="card-title">MVP loop status</h3>
-        <p class="card-sub">Each step traces back to a module in the system design.</p>
-        <div id="loop-steps">
-          <div class="step-row"><div class="step-num" id="s1">1</div><div>Ingestion &amp; validation — load transaction file</div></div>
-          <div class="step-row"><div class="step-num" id="s2">2</div><div>Detection engine — random forest scores every row via API</div></div>
-          <div class="step-row"><div class="step-num" id="s3">3</div><div>Threshold filter — splits auto-clear from alert queue</div></div>
-          <div class="step-row"><div class="step-num" id="s4">4</div><div>Analyst review — explainability, feedback toggle, reason codes</div></div>
-          <div class="step-row"><div class="step-num" id="s5">5</div><div>Audit log — every event timestamped per FEAT-A &amp; AIRM</div></div>
+      <!-- DASHBOARD -->
+      <section id="page-dashboard" class="page active">
+        <div class="page-head">
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-sub">Operational overview of KYC, transaction monitoring, and model health.</p>
         </div>
-      </div>
 
-      <div class="card">
-        <h3 class="card-title">Quick start</h3>
-        <p class="card-sub">No data yet. Load synthetic demo data or upload your own CSV to begin.</p>
-        <div class="btn-row">
-          <button class="btn-primary" onclick="loadDemoData()">Load synthetic demo data</button>
-          <button onclick="goto('ingestion')">Upload custom CSV</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="page-ingestion" class="page">
-      <div class="page-head">
-        <h1 class="page-title">Ingestion &amp; validation</h1>
-        <p class="page-sub">Module 6.2.1 — schema validation, dedup, KYC entity enrichment before the detection engine runs.</p>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">Upload transaction file</h3>
-        <p class="card-sub">CSV format. Required columns: Amount, Payment_type, Sender_bank_location, Receiver_bank_location, Payment_currency, Received_currency. Optional: id, Date, Time, Sender_account, Receiver_account, Is_laundering.</p>
-        <label class="uploader" id="dropzone">
-          <input type="file" id="fileInput" accept=".csv,text/csv">
-          <div class="uploader-title" id="uploader-title">Drop CSV here, or click to browse</div>
-          <div class="uploader-sub">SAML-D schema compatible</div>
-        </label>
-        <div class="btn-row" style="margin-top: 12px;">
-          <button class="btn-primary" onclick="loadDemoData()">Use synthetic demo data</button>
-        </div>
-      </div>
-
-      <div class="card" id="ingestion-results" style="display:none;">
-        <h3 class="card-title">Validation results</h3>
-        <div id="validation-list"></div>
-        <div class="progress"><div class="progress-fill" id="ing-prog"></div></div>
-        <div id="ingestion-summary"></div>
-      </div>
-
-      <div class="card" id="ingestion-preview" style="display:none;">
-        <h3 class="card-title">Data preview <span style="font-weight:400;font-size:12px;color:var(--text-2);">first 5 rows</span></h3>
-        <div style="overflow-x:auto;"><table id="preview-table"></table></div>
-        <div class="btn-row" style="margin-top: 14px;">
-          <button class="btn-primary" id="btn-run-detection">Run detection engine →</button>
-          <span id="scoring-status" style="font-size:12px;color:var(--text-2);align-self:center;"></span>
-        </div>
-      </div>
-    </section>
-
-    <section id="page-alerts" class="page">
-      <div class="page-head">
-        <h1 class="page-title">Alert queue</h1>
-        <p class="page-sub">Module 6.b — ranked by risk score from the live random forest. Click a row for explainability.</p>
-      </div>
-
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div style="font-size:12px;color:var(--text-2);" id="queue-summary">No alerts yet.</div>
-          <div class="btn-row">
-            <button onclick="exportAlertsCSV()">Export CSV</button>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">KYC customers</div>
+            <div class="metric-value" id="m-customers">0</div>
+            <div class="metric-delta" id="m-customers-delta">— onboarded</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Transactions scored</div>
+            <div class="metric-value" id="m-ingested">0</div>
+            <div class="metric-delta">via rf_aml_v1</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Open alerts</div>
+            <div class="metric-value" id="m-alerts">0</div>
+            <div class="metric-delta" id="m-pending">— pending review</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FP rate</div>
+            <div class="metric-value" id="m-fpr">—</div>
+            <div class="metric-delta up" id="m-fpr-delta">vs industry &gt;90%</div>
           </div>
         </div>
-        <div id="alerts-table-wrap"></div>
-      </div>
 
-      <div class="card" id="alert-detail" style="display:none;">
-        <div class="grid-3">
-          <div>
-            <h3 class="card-title">Alert detail <span class="pill pill-info" id="alert-id-pill"></span></h3>
-            <table style="margin-bottom:14px;"><tbody id="alert-fields"></tbody></table>
-
-            <h4 style="font-size:13px;font-weight:500;margin:14px 0 8px;">Why was this flagged</h4>
-            <div class="reason" id="reason-text"></div>
-            <div class="counterfactual" id="counterfactual-text"></div>
-
-            <h4 style="font-size:13px;font-weight:500;margin:14px 0 8px;">Top contributing features (ablation-based)</h4>
-            <div id="shap-panel"><div class="empty">Click an alert to see contributions.</div></div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Workflow status</h3>
+              <p class="card-sub">End-to-end MVP loop, anchored to MAS 626 and FEAT principles.</p>
+            </div>
           </div>
+          <div class="card-body">
+            <div class="step-row"><div class="step-num" id="s1">1</div><div class="step-text">Customer onboarding · KYC screening · risk profile</div></div>
+            <div class="step-row"><div class="step-num" id="s2">2</div><div class="step-text">Transaction ingestion · schema validation · entity enrichment</div></div>
+            <div class="step-row"><div class="step-num" id="s3">3</div><div class="step-text">Detection engine · random forest scoring · SHAP attribution</div></div>
+            <div class="step-row"><div class="step-num" id="s4">4</div><div class="step-text">Threshold filter · alert queue · analyst review</div></div>
+            <div class="step-row"><div class="step-num" id="s5">5</div><div class="step-text">Feedback loop · CDD trigger · audit log</div></div>
+          </div>
+        </div>
 
-          <div>
-            <h4 style="font-size:13px;font-weight:500;margin:0 0 8px;">Analyst feedback</h4>
-            <p style="font-size:12px;color:var(--text-2);margin:0 0 12px;">Q2 differentiator (i): every decision can be challenged. Inputs feed retraining and the audit log.</p>
-
-            <div class="field"><label>Decision</label>
-              <select id="fb-decision">
-                <option value="">— select —</option>
-                <option value="TP">True positive — confirmed suspicious</option>
-                <option value="FP">False positive — legitimate</option>
-                <option value="NEED">Needs more context</option>
-              </select>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Quick start</h3>
+              <p class="card-sub">Run a complete demo loop in under a minute.</p>
             </div>
-
-            <div class="field"><label>Reason code</label>
-              <select id="fb-reason">
-                <option value="">— select —</option>
-                <option>Structuring pattern</option>
-                <option>Cross-border high-risk corridor</option>
-                <option>Unusual counterparty</option>
-                <option>Velocity anomaly</option>
-                <option>Round-number signal</option>
-                <option>Customer profile mismatch</option>
-                <option>No suspicious indicator — false flag</option>
-                <option>Known legitimate business activity</option>
-                <option>Insufficient information</option>
-              </select>
-            </div>
-
-            <div class="field"><label>Justification (optional)</label>
-              <textarea id="fb-note" placeholder="Free text — captured for audit"></textarea>
-            </div>
-
+          </div>
+          <div class="card-body">
             <div class="btn-row">
-              <button class="btn-success" onclick="submitFeedback()">Submit feedback</button>
-              <button class="btn-danger" onclick="escalateAlert()">Escalate to STR</button>
+              <button class="btn-primary" onclick="seedDemoKYC()">Seed 8 demo customers</button>
+              <button onclick="loadDemoTransactions()">Generate 300 transactions</button>
+              <button onclick="goto('onboarding')">Onboard new customer</button>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="page-thresholds" class="page">
-      <div class="page-head">
-        <h1 class="page-title">Threshold control</h1>
-        <p class="page-sub">MAS AIRM §5.3 — operationalises the Reliance dimension. Configurable per use case.</p>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">Risk score cut-off</h3>
-        <p class="card-sub">Transactions scoring below this go to auto-clear; above this go to the analyst queue.</p>
-        <div class="threshold-row">
-          <span style="font-size:12px;color:var(--text-2);">0.00</span>
-          <input type="range" id="threshold" min="10" max="95" value="50" step="1">
-          <span style="font-size:12px;color:var(--text-2);">1.00</span>
-          <span class="threshold-val" id="threshold-val">0.50</span>
+      <!-- ONBOARDING -->
+      <section id="page-onboarding" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Customer onboarding</h1>
+          <p class="page-sub">MAS 626 §6 — capture identity, screen against sanctions/PEP/adverse media, derive risk tier and CDD track.</p>
         </div>
 
-        <div class="metrics" style="margin-top: 16px;">
-          <div class="metric"><div class="metric-label">Auto-clear (below)</div><div class="metric-value" id="t-auto">0</div></div>
-          <div class="metric"><div class="metric-label">Alert queue (above)</div><div class="metric-value" id="t-alert">0</div></div>
-          <div class="metric"><div class="metric-label">Estimated FP rate</div><div class="metric-value" id="t-fpr">—</div></div>
-          <div class="metric"><div class="metric-label">Recall on known launders</div><div class="metric-value" id="t-recall">—</div></div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">New customer details</h3>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field">
+                <label class="required">Full legal name</label>
+                <input type="text" id="ob-name" placeholder="e.g. Sarah Chen">
+              </div>
+              <div class="field">
+                <label class="required">Date of birth</label>
+                <input type="date" id="ob-dob" value="1985-01-01">
+              </div>
+            </div>
+
+            <div class="field-row-3">
+              <div class="field">
+                <label class="required">Nationality</label>
+                <input type="text" id="ob-nat" placeholder="e.g. Singaporean">
+              </div>
+              <div class="field">
+                <label class="required">Country of residence</label>
+                <select id="ob-country">
+                  <option>Singapore</option><option>UK</option><option>USA</option><option>Germany</option>
+                  <option>Japan</option><option>Switzerland</option><option>India</option><option>France</option>
+                  <option>Australia</option><option>China</option><option>Italy</option><option>Spain</option>
+                  <option>Mexico</option><option>UAE</option><option>Nigeria</option><option>Morocco</option>
+                  <option>Pakistan</option><option>Turkey</option><option>Brazil</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="required">ID type</label>
+                <select id="ob-idtype">
+                  <option>NRIC</option><option>Passport</option><option>Driving License</option>
+                  <option>National ID</option><option>Aadhaar</option><option>Emirates ID</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="required">ID number</label>
+                <input type="text" id="ob-idnum" placeholder="e.g. S1234567A">
+              </div>
+              <div class="field">
+                <label>Occupation</label>
+                <input type="text" id="ob-occ" placeholder="e.g. Software Engineer">
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Industry</label>
+                <select id="ob-ind">
+                  <option value="">— select —</option>
+                  <option>Technology</option><option>Finance/Banking</option><option>Retail</option>
+                  <option>Healthcare</option><option>Manufacturing</option><option>Real estate</option>
+                  <option>Cash-intensive</option><option>Money services business</option>
+                  <option>Cryptocurrency</option><option>Casino/gambling</option>
+                  <option>Government</option><option>Education</option><option>None</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Source of funds</label>
+                <input type="text" id="ob-sof" placeholder="e.g. Salary, business revenue">
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Expected monthly transaction volume (USD)</label>
+              <input type="number" id="ob-vol" placeholder="e.g. 15000" value="0">
+            </div>
+
+            <div class="btn-row" style="margin-top: 8px;">
+              <button class="btn-primary" onclick="submitOnboarding()">Run onboarding &amp; screening</button>
+              <button onclick="fillSampleData()">Use sample data</button>
+            </div>
+          </div>
         </div>
 
-        <div class="btn-row" style="margin-top: 12px;">
-          <button class="btn-primary" onclick="applyThreshold()">Apply threshold</button>
+        <div class="card" id="ob-result" style="display:none;">
+          <div class="card-header">
+            <h3 class="card-title">Onboarding result</h3>
+          </div>
+          <div class="card-body" id="ob-result-body"></div>
         </div>
-      </div>
+      </section>
 
-      <div class="card">
-        <h3 class="card-title">Model performance</h3>
-        <p class="card-sub">Module 6.3.7 — confusion matrix on labelled holdout (uses Is_laundering column if present).</p>
-        <div class="grid-2">
-          <div>
-            <h4 style="font-size:13px;font-weight:500;margin:0 0 8px;">Confusion matrix</h4>
-            <table id="confusion-table">
-              <thead><tr><th></th><th>Predicted clean</th><th>Predicted laundering</th></tr></thead>
-              <tbody>
-                <tr><td style="color:var(--text-2)">Actual clean</td><td id="cm-tn">—</td><td id="cm-fp">—</td></tr>
-                <tr><td style="color:var(--text-2)">Actual laundering</td><td id="cm-fn">—</td><td id="cm-tp">—</td></tr>
+      <!-- CUSTOMERS -->
+      <section id="page-customers" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Customer directory</h1>
+          <p class="page-sub">KYC entity store — single source of truth for all customers, their risk tiers, and linked transactions.</p>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input type="text" id="cust-search" placeholder="Search by name or country…" oninput="renderCustomers()">
+            <select id="cust-filter" onchange="renderCustomers()">
+              <option value="">All risk tiers</option>
+              <option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+            </select>
+            <div class="toolbar-spacer"></div>
+            <button class="btn-sm" onclick="seedDemoKYC()">Seed demo</button>
+            <button class="btn-sm" onclick="goto('onboarding')">+ New customer</button>
+          </div>
+          <div class="card-body tight">
+            <div id="customers-table"></div>
+          </div>
+        </div>
+
+        <div class="card" id="customer-detail" style="display:none;">
+          <div class="card-header" id="customer-detail-header"></div>
+          <div class="card-body" id="customer-detail-body"></div>
+        </div>
+      </section>
+
+      <!-- INGESTION -->
+      <section id="page-ingestion" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Transaction ingestion</h1>
+          <p class="page-sub">MAS 626 §6.2.1 — schema validation, deduplication, KYC entity enrichment.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Upload transaction file</h3></div>
+          <div class="card-body">
+            <p class="card-sub" style="margin: -4px 0 12px;">
+              CSV format. Required columns: Amount, Payment_type, Sender_bank_location, Receiver_bank_location,
+              Payment_currency, Received_currency. Optional: id, Date, Time, Sender_account, Receiver_account, Is_laundering.
+            </p>
+            <label class="uploader" id="dropzone">
+              <input type="file" id="fileInput" accept=".csv,text/csv">
+              <div class="uploader-title" id="uploader-title">Drop CSV here, or click to browse</div>
+              <div class="uploader-sub">SAML-D schema compatible</div>
+            </label>
+            <div class="btn-row" style="margin-top: 12px;">
+              <button class="btn-primary" onclick="loadDemoTransactions()">Generate synthetic data</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="ingestion-results" style="display:none;">
+          <div class="card-header"><h3 class="card-title">Validation results</h3></div>
+          <div class="card-body">
+            <div id="validation-list"></div>
+            <div class="progress"><div class="progress-fill" id="ing-prog"></div></div>
+            <div id="ingestion-summary"></div>
+          </div>
+        </div>
+
+        <div class="card" id="ingestion-preview" style="display:none;">
+          <div class="card-header">
+            <h3 class="card-title">Data preview</h3>
+            <span style="font-size:11px;color:var(--text-3);">First 5 rows</span>
+          </div>
+          <div class="card-body tight">
+            <div style="overflow-x:auto;"><table id="preview-table"></table></div>
+          </div>
+          <div style="padding: 14px 18px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center;">
+            <button class="btn-primary" id="btn-run-detection">Run detection engine →</button>
+            <span id="scoring-status" style="font-size:11px;color:var(--text-3);"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ALERTS -->
+      <section id="page-alerts" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Alert queue</h1>
+          <p class="page-sub">Module 6.b — ranked by risk score. Click a row to open explainability and feedback panel.</p>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <span id="queue-summary" style="font-size:11px;color:var(--text-2);">No alerts yet.</span>
+            <div class="toolbar-spacer"></div>
+            <button class="btn-sm" onclick="exportAlertsCSV()">Export CSV</button>
+          </div>
+          <div class="card-body tight">
+            <div id="alerts-table-wrap"></div>
+          </div>
+        </div>
+
+        <div class="card" id="alert-detail" style="display:none;">
+          <div class="card-header">
+            <h3 class="card-title">Alert detail <span class="pill pill-info mono" id="alert-id-pill" style="margin-left:8px;"></span></h3>
+          </div>
+          <div class="card-body">
+            <div class="grid-3">
+              <div>
+                <table class="kv-table" style="margin-bottom:8px;"><tbody id="alert-fields"></tbody></table>
+
+                <div class="reason-box">
+                  <span class="reason-label">Plain-English reason</span>
+                  <span id="reason-text"></span>
+                </div>
+                <div class="reason-box cf">
+                  <span class="reason-label">Counterfactual</span>
+                  <span id="counterfactual-text"></span>
+                </div>
+
+                <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:16px 0 8px;">Feature contributions</h4>
+                <div id="shap-panel"><div class="empty">Click an alert to compute contributions.</div></div>
+              </div>
+
+              <div>
+                <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:0 0 8px;">Analyst feedback</h4>
+                <p style="font-size:11px;color:var(--text-2);margin:0 0 14px;">Differentiator (i): every decision can be challenged. Inputs feed retraining + the audit log.</p>
+
+                <div class="field"><label>Decision</label>
+                  <select id="fb-decision">
+                    <option value="">— select —</option>
+                    <option value="TP">True positive — confirmed suspicious</option>
+                    <option value="FP">False positive — legitimate</option>
+                    <option value="NEED">Needs more context</option>
+                  </select>
+                </div>
+
+                <div class="field"><label>Reason code</label>
+                  <select id="fb-reason">
+                    <option value="">— select —</option>
+                    <option>Structuring pattern</option>
+                    <option>Cross-border high-risk corridor</option>
+                    <option>Unusual counterparty</option>
+                    <option>Velocity anomaly</option>
+                    <option>Round-number signal</option>
+                    <option>Customer profile mismatch</option>
+                    <option>No suspicious indicator — false flag</option>
+                    <option>Known legitimate business activity</option>
+                    <option>Insufficient information</option>
+                  </select>
+                </div>
+
+                <div class="field"><label>Justification</label>
+                  <textarea id="fb-note" placeholder="Free text — captured for audit"></textarea>
+                </div>
+
+                <div class="btn-row">
+                  <button class="btn-success" onclick="submitFeedback()">Submit feedback</button>
+                  <button class="btn-danger" onclick="escalateAlert()">Escalate to STR</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- THRESHOLDS -->
+      <section id="page-thresholds" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Threshold control</h1>
+          <p class="page-sub">MAS AIRM §5.3 — operationalises the Reliance dimension. Configurable per use case.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Risk score cut-off</h3></div>
+          <div class="card-body">
+            <p style="font-size:12px;color:var(--text-2);margin: 0 0 14px;">Transactions scoring below this go to auto-clear; above this go to the analyst queue.</p>
+            <div class="threshold-row">
+              <span style="font-size:11px;color:var(--text-3);font-family:'JetBrains Mono',monospace;">0.00</span>
+              <input type="range" id="threshold" min="10" max="95" value="50" step="1">
+              <span style="font-size:11px;color:var(--text-3);font-family:'JetBrains Mono',monospace;">1.00</span>
+              <span class="threshold-val" id="threshold-val">0.50</span>
+            </div>
+
+            <div class="metrics" style="margin-top: 16px;">
+              <div class="metric"><div class="metric-label">Auto-clear</div><div class="metric-value" id="t-auto">0</div></div>
+              <div class="metric"><div class="metric-label">Alert queue</div><div class="metric-value" id="t-alert">0</div></div>
+              <div class="metric"><div class="metric-label">FP rate</div><div class="metric-value" id="t-fpr">—</div></div>
+              <div class="metric"><div class="metric-label">Recall</div><div class="metric-value" id="t-recall">—</div></div>
+            </div>
+
+            <div class="btn-row" style="margin-top: 12px;">
+              <button class="btn-primary" onclick="applyThreshold()">Apply threshold</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Model performance</h3>
+            <span style="font-size:11px;color:var(--text-3);">From labelled holdout</span>
+          </div>
+          <div class="card-body">
+            <div class="grid-2">
+              <div>
+                <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:0 0 8px;">Confusion matrix</h4>
+                <table>
+                  <thead><tr><th></th><th>Predicted clean</th><th>Predicted laundering</th></tr></thead>
+                  <tbody>
+                    <tr><td style="color:var(--text-3)">Actual clean</td><td class="mono" id="cm-tn">—</td><td class="mono" id="cm-fp">—</td></tr>
+                    <tr><td style="color:var(--text-3)">Actual laundering</td><td class="mono" id="cm-fn">—</td><td class="mono" id="cm-tp">—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:0 0 8px;">Performance metrics</h4>
+                <table class="kv-table">
+                  <tr><td>Precision</td><td class="mono" id="met-prec">—</td></tr>
+                  <tr><td>Recall</td><td class="mono" id="met-rec">—</td></tr>
+                  <tr><td>F1 score</td><td class="mono" id="met-f1">—</td></tr>
+                  <tr><td>FP rate</td><td class="mono" id="met-fpr2">—</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODEL -->
+      <section id="page-model" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Model registry</h1>
+          <p class="page-sub">MAS AIRM §5.2.4 — every attribute the inventory must capture, populated from the live model.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">rf_aml_v1 <span class="pill pill-info" style="margin-left:8px;">production</span></h3>
+          </div>
+          <div class="card-body">
+            <table class="kv-table">
+              <tr><td>Purpose</td><td>Detect suspicious money-laundering transactions for analyst review</td></tr>
+              <tr><td>Scope of use</td><td>Post-payment transaction screening</td></tr>
+              <tr><td>Jurisdiction</td><td>Singapore (MAS-regulated)</td></tr>
+              <tr><td>Model type</td><td>Random forest classifier (sklearn)</td></tr>
+              <tr><td>N estimators</td><td class="mono" id="reg-trees">—</td></tr>
+              <tr><td>N features</td><td class="mono" id="reg-feats">—</td></tr>
+              <tr><td>Training data</td><td>Kaggle SAML-D synthetic dataset (Oztas et al. 2023)</td></tr>
+              <tr><td>Risk materiality</td><td><span class="pill pill-medium">Medium</span> impact, complexity, reliance</td></tr>
+              <tr><td>Status</td><td>Approved for pilot · loaded <span id="reg-date"></span></td></tr>
+              <tr><td>Owner</td><td>Counter AI ML team</td></tr>
+              <tr><td>Validator</td><td>Independent peer review</td></tr>
+              <tr><td>PII used</td><td>None (account IDs pseudonymised)</td></tr>
+              <tr><td>Schema blocks</td><td><span class="mono" style="font-size:11px;" id="reg-blocks">—</span></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Global feature importance</h3>
+            <span style="font-size:11px;color:var(--text-3);">FEAT-T transparency</span>
+          </div>
+          <div class="card-body">
+            <div id="feature-imp-list"><div class="empty">Loading from model…</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Schema fitting (optional)</h3>
+            <span style="font-size:11px;color:var(--text-3);">Advanced</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:12px;color:var(--text-2);margin: 0 0 12px;">
+              Upload the original training CSV to refine vocab ordering and Amount standardization for higher-accuracy predictions on new data.
+            </p>
+            <input type="file" id="fit-file" accept=".csv,text/csv">
+            <div class="btn-row" style="margin-top: 10px;">
+              <button onclick="fitSchema()">Fit schema from training CSV</button>
+              <span id="fit-status" style="font-size:11px;color:var(--text-3);align-self:center;"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GOVERNANCE -->
+      <section id="page-governance" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Governance pack</h1>
+          <p class="page-sub">Auto-generated artifacts mapped to MAS AIRM, FEAT principles, and NIST AI RMF.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Compliance artifacts</h3>
+            <button class="btn-primary btn-sm" onclick="exportPack()">Export pack</button>
+          </div>
+          <div class="card-body">
+            <div class="gov-grid">
+              <div class="gov-tile"><div class="gov-tile-title">Model card</div><div class="gov-tile-sub">Training data, performance, limitations, owner</div><div class="gov-tile-meta">FEAT-T · AIRM §6.3.16</div></div>
+              <div class="gov-tile"><div class="gov-tile-title">Fairness report</div><div class="gov-tile-sub">Per-segment FP rate by currency, corridor, jurisdiction</div><div class="gov-tile-meta">FEAT-F · AIRM §6.3.15</div></div>
+              <div class="gov-tile"><div class="gov-tile-title">Audit log</div><div class="gov-tile-sub">Every prediction, override, threshold change</div><div class="gov-tile-meta">FEAT-A · AIRM §6.5</div></div>
+              <div class="gov-tile"><div class="gov-tile-title">Drift monitor</div><div class="gov-tile-sub">Input-distribution drift vs. training baseline</div><div class="gov-tile-meta">NIST Manage</div></div>
+              <div class="gov-tile"><div class="gov-tile-title">Risk materiality</div><div class="gov-tile-sub">Impact, complexity, reliance assessment</div><div class="gov-tile-meta">AIRM §5.3</div></div>
+              <div class="gov-tile"><div class="gov-tile-title">Compensatory test pack</div><div class="gov-tile-sub">Bank-specific test results vs. model claims</div><div class="gov-tile-meta">AIRM §7.2.2(a)</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Fairness check by sub-population</h3>
+            <span style="font-size:11px;color:var(--text-3);">MAS AIRM §6.3.7(c)</span>
+          </div>
+          <div class="card-body tight">
+            <table>
+              <thead><tr><th>Segment</th><th>Volume</th><th>FP rate</th><th>Recall</th><th>Status</th></tr></thead>
+              <tbody id="fairness-body">
+                <tr><td colspan="5" style="text-align:center;color:var(--text-3);padding:24px;">Run detection on labelled data to populate.</td></tr>
               </tbody>
             </table>
           </div>
-          <div>
-            <h4 style="font-size:13px;font-weight:500;margin:0 0 8px;">Metrics</h4>
-            <table>
-              <tr><td style="color:var(--text-2)">Precision</td><td id="met-prec">—</td></tr>
-              <tr><td style="color:var(--text-2)">Recall</td><td id="met-rec">—</td></tr>
-              <tr><td style="color:var(--text-2)">F1</td><td id="met-f1">—</td></tr>
-              <tr><td style="color:var(--text-2)">FP rate</td><td id="met-fpr2">—</td></tr>
-            </table>
+        </div>
+      </section>
+
+      <!-- AUDIT -->
+      <section id="page-audit" class="page">
+        <div class="page-head">
+          <h1 class="page-title">Audit log</h1>
+          <p class="page-sub">MAS AIRM §6.5 — immutable record of every system event. Append-only.</p>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <span style="font-size:11px;color:var(--text-2);">Total events: <span class="mono" id="audit-count">0</span></span>
+            <div class="toolbar-spacer"></div>
+            <button class="btn-sm" onclick="exportAuditCSV()">Export CSV</button>
+          </div>
+          <div class="card-body tight">
+            <div class="scrollable" id="audit-list"></div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="page-model" class="page">
-      <div class="page-head">
-        <h1 class="page-title">Model registry</h1>
-        <p class="page-sub">MAS AIRM §5.2.4 — every attribute the inventory must capture.</p>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">rf_aml_v1 <span class="pill pill-purple">production</span></h3>
-        <table>
-          <tr><td style="color:var(--text-2);width:200px;">Purpose</td><td>Detect suspicious money-laundering transactions for analyst review</td></tr>
-          <tr><td style="color:var(--text-2);">Scope of use</td><td>Transaction monitoring (post-payment screening)</td></tr>
-          <tr><td style="color:var(--text-2);">Jurisdiction</td><td>Singapore (MAS-regulated)</td></tr>
-          <tr><td style="color:var(--text-2);">Model type</td><td>Random forest classifier (sklearn)</td></tr>
-          <tr><td style="color:var(--text-2);">N estimators</td><td id="reg-trees">—</td></tr>
-          <tr><td style="color:var(--text-2);">N features</td><td id="reg-feats">—</td></tr>
-          <tr><td style="color:var(--text-2);">Model output</td><td>Laundering probability ∈ [0, 1] + class label</td></tr>
-          <tr><td style="color:var(--text-2);">Training data</td><td>Kaggle SAML-D synthetic transaction-monitoring dataset (Oztas et al. 2023)</td></tr>
-          <tr><td style="color:var(--text-2);">Risk materiality tier</td><td><span class="pill pill-med">Medium</span> impact, complexity, reliance</td></tr>
-          <tr><td style="color:var(--text-2);">Status</td><td>Approved for pilot · loaded <span id="reg-date"></span></td></tr>
-          <tr><td style="color:var(--text-2);">Owner</td><td>Counter AI ML team</td></tr>
-          <tr><td style="color:var(--text-2);">Validator</td><td>Independent peer review</td></tr>
-          <tr><td style="color:var(--text-2);">PII used</td><td>None (account IDs are pseudonymised)</td></tr>
-          <tr><td style="color:var(--text-2);">Schema blocks</td><td id="reg-blocks">—</td></tr>
-        </table>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">Top features by global importance</h3>
-        <p class="card-sub">Module 6.3.11 — global explainability across the random forest.</p>
-        <div id="feature-imp-list"><div class="empty">Loading from model…</div></div>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">Schema fitting (optional)</h3>
-        <p class="card-sub">If you have the original training CSV, upload it to refine vocab and Amount standardization. Improves prediction accuracy on new data.</p>
-        <input type="file" id="fit-file" accept=".csv,text/csv">
-        <div class="btn-row" style="margin-top: 10px;">
-          <button onclick="fitSchema()">Fit schema from training CSV</button>
-          <span id="fit-status" style="font-size:12px;color:var(--text-2);align-self:center;"></span>
-        </div>
-      </div>
-    </section>
-
-    <section id="page-governance" class="page">
-      <div class="page-head">
-        <h1 class="page-title">Governance pack</h1>
-        <p class="page-sub">Auto-generated artifacts mapped to MAS AIRM, FEAT, and NIST AI RMF.</p>
-      </div>
-
-      <div class="card">
-        <div class="gov-grid">
-          <div class="gov-tile"><div class="gov-tile-title">Model card</div><div class="gov-tile-sub">Training data, performance, limitations, owner — FEAT-T, AIRM §6.3.16</div><div class="gov-tile-status">● Generated</div></div>
-          <div class="gov-tile"><div class="gov-tile-title">Fairness report</div><div class="gov-tile-sub">Per-segment FP rate (currency, corridor) — FEAT-F, AIRM §6.3.15</div><div class="gov-tile-status">● Generated</div></div>
-          <div class="gov-tile"><div class="gov-tile-title">Audit log</div><div class="gov-tile-sub">Every prediction, override, threshold change — FEAT-A, AIRM §6.5</div><div class="gov-tile-status">● Live</div></div>
-          <div class="gov-tile"><div class="gov-tile-title">Drift monitor</div><div class="gov-tile-sub">Input-distribution drift vs. training baseline — NIST Manage</div><div class="gov-tile-status">● Live</div></div>
-          <div class="gov-tile"><div class="gov-tile-title">Risk materiality assessment</div><div class="gov-tile-sub">Impact, complexity, reliance — AIRM §5.3</div><div class="gov-tile-status">● Generated</div></div>
-          <div class="gov-tile"><div class="gov-tile-title">Compensatory test pack</div><div class="gov-tile-sub">Bank-specific test results — AIRM §7.2.2(a)</div><div class="gov-tile-status">● Generated</div></div>
-        </div>
-        <div class="btn-row" style="margin-top: 16px;">
-          <button class="btn-primary" onclick="exportPack()">Export regulator-ready compliance pack</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">Fairness check by sub-population</h3>
-        <p class="card-sub">Module 6.3.7(c) — flags disparate-impact concerns by segment.</p>
-        <table>
-          <thead><tr><th>Segment</th><th>Volume</th><th>FP rate</th><th>Recall</th><th>Status</th></tr></thead>
-          <tbody id="fairness-body">
-            <tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:20px;">Run detection on labelled data to populate.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section id="page-audit" class="page">
-      <div class="page-head">
-        <h1 class="page-title">Audit log</h1>
-        <p class="page-sub">Module 6.5 — immutable record of every system event. Append-only.</p>
-      </div>
-      <div class="card">
-        <div class="btn-row" style="margin-bottom: 12px;">
-          <button onclick="exportAuditCSV()">Export audit log</button>
-          <span style="font-size:12px;color:var(--text-2);align-self:center;">Total events: <span id="audit-count">0</span></span>
-        </div>
-        <div id="audit-list"></div>
-      </div>
-    </section>
-
+    </div>
   </main>
 </div>
 
@@ -504,9 +1203,11 @@ const STATE = {
   selectedAlert: null,
   feedback: {},
   modelMeta: null,
+  customers: [],
+  selectedCustomer: null,
 };
 
-const API = ''; // same origin as Flask server
+const API = '';
 
 async function api(path, opts = {}) {
   const res = await fetch(API + path, {
@@ -521,22 +1222,22 @@ async function checkHealth() {
   try {
     const h = await api('/api/health');
     STATE.modelMeta = h;
-    document.getElementById('health-pill').textContent = '● model live';
-    document.getElementById('health-pill').classList.remove('bad');
-    document.getElementById('health-detail').textContent =
-      `${h.model} · ${h.n_estimators} trees · ${h.n_features} features`;
+    document.getElementById('health-text').textContent = `${h.model} · ${h.n_estimators} trees`;
+    document.getElementById('health-dot').classList.remove('bad');
     document.getElementById('reg-trees').textContent = h.n_estimators;
     document.getElementById('reg-feats').textContent = h.n_features;
     document.getElementById('reg-date').textContent = h.loaded_at.slice(0,10);
     document.getElementById('reg-blocks').textContent =
-      Object.entries(h.schema_blocks).map(([k,v]) => `${k} (${v})`).join(', ');
-    renderFeatureImportances(h);
+      Object.entries(h.schema_blocks).map(([k,v]) => `${k}(${v})`).join(' · ');
+    document.getElementById('topbar-meta').textContent = `Model: rf_aml_v1 · ${h.n_features} features · loaded ${h.loaded_at.slice(11,16)} UTC`;
+    renderFeatureImportances();
     logAudit('system', 'session started', `model ${h.model} loaded · ${h.n_estimators} trees, ${h.n_features} features`);
+    await loadCustomers();
   } catch (e) {
-    document.getElementById('health-pill').textContent = 'model offline';
-    document.getElementById('health-pill').classList.add('bad');
-    document.getElementById('health-detail').textContent = 'Backend unreachable. Run `python3 server.py` first.';
-    showToast('Cannot reach backend — is the server running?');
+    document.getElementById('health-text').textContent = 'offline';
+    document.getElementById('health-dot').classList.add('bad');
+    document.getElementById('topbar-meta').textContent = 'Backend unreachable';
+    showToast('Backend not reachable. Start `python server.py`.');
   }
 }
 
@@ -560,17 +1261,24 @@ function goto(page) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
   document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+  const titles = {
+    dashboard: 'Dashboard', onboarding: 'KYC / Customer onboarding',
+    customers: 'KYC / Customer directory', ingestion: 'Transaction monitoring / Ingestion',
+    alerts: 'Transaction monitoring / Alert queue', thresholds: 'Risk / Threshold control',
+    model: 'Risk / Model registry', governance: 'Governance / Pack', audit: 'Governance / Audit log',
+  };
+  document.getElementById('breadcrumb').innerHTML = `Counter AI / <span>${titles[page] || page}</span>`;
 }
 document.querySelectorAll('.nav-item').forEach(n => {
   n.addEventListener('click', () => goto(n.dataset.page));
 });
 
-function setStep(n, state) {
+function setStep(n) {
   for (let i = 1; i <= 5; i++) {
     const el = document.getElementById('s' + i);
     el.classList.remove('done', 'active');
     if (i < n) el.classList.add('done');
-    else if (i === n) el.classList.add(state || 'active');
+    else if (i === n) el.classList.add('active');
   }
 }
 
@@ -578,6 +1286,301 @@ function fmtAmount(n) {
   return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+function initials(name) {
+  return (name || '').split(/\s+/).map(s => s[0] || '').slice(0, 2).join('').toUpperCase();
+}
+
+function tierPill(tier) {
+  const map = { Critical: 'pill-critical', High: 'pill-high', Medium: 'pill-medium', Low: 'pill-low' };
+  return `<span class="pill ${map[tier] || 'pill-neutral'} pill-dot">${tier}</span>`;
+}
+
+function scoreCell(score) {
+  const cls = score > 0.75 ? 'pill-critical' : score > 0.6 ? 'pill-high' : score > 0.45 ? 'pill-medium' : 'pill-low';
+  const fill = score > 0.75 ? 'var(--critical)' : score > 0.6 ? 'var(--high)' : score > 0.45 ? 'var(--medium)' : 'var(--low)';
+  return `<div class="score-cell">
+    <div class="score-bar"><div class="score-bar-fill" style="width:${(score*100).toFixed(0)}%; background:${fill};"></div></div>
+    <span>${score.toFixed(3)}</span>
+  </div>`;
+}
+
+// KYC
+async function submitOnboarding() {
+  const payload = {
+    full_name: document.getElementById('ob-name').value,
+    dob: document.getElementById('ob-dob').value,
+    nationality: document.getElementById('ob-nat').value,
+    country: document.getElementById('ob-country').value,
+    id_type: document.getElementById('ob-idtype').value,
+    id_number: document.getElementById('ob-idnum').value,
+    occupation: document.getElementById('ob-occ').value,
+    industry: document.getElementById('ob-ind').value,
+    source_of_funds: document.getElementById('ob-sof').value,
+    expected_monthly_volume: Number(document.getElementById('ob-vol').value) || 0,
+  };
+  if (!payload.full_name || !payload.dob || !payload.country || !payload.id_number || !payload.nationality) {
+    showToast('Fill in all required fields'); return;
+  }
+  try {
+    const c = await api('/api/kyc/onboard', { method: 'POST', body: JSON.stringify(payload) });
+    showOnboardingResult(c);
+    logAudit('compliance', 'customer onboarded', `${c.customer_id} ${c.full_name} → ${c.risk_tier}`);
+    await loadCustomers();
+    setStep(2);
+    showToast(`Onboarded: ${c.full_name} · risk ${c.risk_tier}`);
+  } catch (e) {
+    showToast('Onboarding failed: ' + e.message);
+  }
+}
+
+function showOnboardingResult(c) {
+  const wrap = document.getElementById('ob-result');
+  wrap.style.display = 'block';
+  const body = document.getElementById('ob-result-body');
+
+  let hitsHtml = '';
+  if (c.screening_hits.length === 0) {
+    hitsHtml = `<div class="empty" style="padding:16px;">No screening hits — clean profile.</div>`;
+  } else {
+    hitsHtml = c.screening_hits.map(h => `
+      <div class="hit-item">
+        <div class="hit-icon ${h.severity}">!</div>
+        <div class="hit-body">
+          <div class="hit-list">${h.list}</div>
+          <div class="hit-match">Match: ${h.match}</div>
+        </div>
+        <span class="pill pill-${h.severity}">${h.severity}</span>
+      </div>
+    `).join('');
+  }
+
+  const statusPill = c.status === 'blocked'
+    ? `<span class="pill pill-critical pill-dot">BLOCKED</span>`
+    : `<span class="pill pill-low pill-dot">Active</span>`;
+
+  body.innerHTML = `
+    <div class="grid-2">
+      <div>
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+          <div class="customer-avatar" style="width:42px;height:42px;font-size:14px;">${initials(c.full_name)}</div>
+          <div>
+            <div style="font-size:15px;font-weight:600;">${c.full_name}</div>
+            <div class="mono" style="font-size:11px;color:var(--text-3);">${c.customer_id}</div>
+          </div>
+          <div style="margin-left:auto; display:flex; gap:6px; flex-direction:column; align-items:flex-end;">
+            ${statusPill}
+            ${tierPill(c.risk_tier)}
+          </div>
+        </div>
+        <table class="kv-table">
+          <tr><td>Risk score</td><td class="mono">${c.risk_score.toFixed(3)}</td></tr>
+          <tr><td>CDD track</td><td>${c.cdd_track}</td></tr>
+          <tr><td>Country</td><td>${c.country}</td></tr>
+          <tr><td>Industry</td><td>${c.industry || '—'}</td></tr>
+          <tr><td>Occupation</td><td>${c.occupation || '—'}</td></tr>
+          <tr><td>Next review</td><td>${c.review_due.slice(0,10)}</td></tr>
+        </table>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn-sm" onclick="openCustomer('${c.customer_id}'); goto('customers');">Open customer 360 →</button>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:0 0 10px;">
+          Screening hits (${c.screening_hits.length})
+        </h4>
+        ${hitsHtml}
+      </div>
+    </div>
+  `;
+}
+
+function fillSampleData() {
+  const samples = [
+    { name: 'Sarah Chen', dob: '1985-03-12', nat: 'Singaporean', country: 'Singapore', idt: 'NRIC', idn: 'S8512XXX', occ: 'Software Engineer', ind: 'Technology', sof: 'Salary', vol: 15000 },
+    { name: 'Adekunle Okafor', dob: '1968-02-19', nat: 'Nigerian', country: 'Nigeria', idt: 'Passport', idn: 'A09XXXXX', occ: 'Senator', ind: 'Government', sof: 'Government salary', vol: 45000 },
+    { name: 'Elena Volkov', dob: '1988-09-21', nat: 'Russian', country: 'Switzerland', idt: 'Passport', idn: 'K20XXXXX', occ: 'Investor', ind: 'Cryptocurrency', sof: 'Crypto trading', vol: 150000 },
+  ];
+  const s = samples[Math.floor(Math.random() * samples.length)];
+  document.getElementById('ob-name').value = s.name;
+  document.getElementById('ob-dob').value = s.dob;
+  document.getElementById('ob-nat').value = s.nat;
+  document.getElementById('ob-country').value = s.country;
+  document.getElementById('ob-idtype').value = s.idt;
+  document.getElementById('ob-idnum').value = s.idn;
+  document.getElementById('ob-occ').value = s.occ;
+  document.getElementById('ob-ind').value = s.ind;
+  document.getElementById('ob-sof').value = s.sof;
+  document.getElementById('ob-vol').value = s.vol;
+  showToast(`Sample loaded: ${s.name}`);
+}
+
+async function seedDemoKYC() {
+  try {
+    const r = await api('/api/kyc/seed-demo', { method: 'POST' });
+    logAudit('admin', 'seeded demo KYC', `${r.seeded} customers added (total ${r.total_customers})`);
+    showToast(`Seeded ${r.seeded} demo customers`);
+    await loadCustomers();
+    document.getElementById('m-customers-delta').textContent = `${r.total_customers} active`;
+    setStep(2);
+  } catch (e) { showToast('Seed failed: ' + e.message); }
+}
+
+async function loadCustomers() {
+  try {
+    const r = await api('/api/kyc/customers');
+    STATE.customers = r.customers;
+    document.getElementById('cust-badge').textContent = r.customers.length || '0';
+    document.getElementById('m-customers').textContent = r.customers.length;
+    document.getElementById('m-customers-delta').textContent =
+      r.customers.length ? `${r.customers.filter(c => c.risk_tier === 'High' || c.risk_tier === 'Critical').length} high-risk` : '— onboarded';
+    renderCustomers();
+  } catch (e) {}
+}
+
+function renderCustomers() {
+  const wrap = document.getElementById('customers-table');
+  let list = STATE.customers;
+  const q = (document.getElementById('cust-search').value || '').toLowerCase();
+  const tier = document.getElementById('cust-filter').value;
+  if (q) list = list.filter(c => c.full_name.toLowerCase().includes(q) || c.country.toLowerCase().includes(q));
+  if (tier) list = list.filter(c => c.risk_tier === tier);
+
+  if (list.length === 0) {
+    wrap.innerHTML = `<div class="empty">No customers match. <button class="btn-sm" onclick="seedDemoKYC()">Seed demo data</button></div>`;
+    return;
+  }
+  wrap.innerHTML = `<table>
+    <thead><tr><th>Customer</th><th>Country</th><th>Industry</th><th>Risk tier</th><th>Hits</th><th>Status</th><th>Onboarded</th></tr></thead>
+    <tbody>${list.map(c => `
+      <tr class="clickable" onclick="openCustomer('${c.customer_id}')">
+        <td><div class="customer-cell">
+          <div class="customer-avatar">${initials(c.full_name)}</div>
+          <div class="customer-cell-info">
+            <span class="customer-cell-name">${c.full_name}</span>
+            <span class="customer-cell-id">${c.customer_id}</span>
+          </div>
+        </div></td>
+        <td>${c.country}</td>
+        <td>${c.industry || '—'}</td>
+        <td>${tierPill(c.risk_tier)}</td>
+        <td class="mono">${c.screening_hits}</td>
+        <td>${c.status === 'blocked' ? '<span class="pill pill-critical pill-dot">Blocked</span>' : '<span class="pill pill-low pill-dot">Active</span>'}</td>
+        <td style="color:var(--text-3);font-size:11px;">${c.onboarded_at.slice(0,10)}</td>
+      </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+async function openCustomer(cust_id) {
+  try {
+    const c = await api('/api/kyc/customer/' + cust_id);
+    STATE.selectedCustomer = c;
+    const det = document.getElementById('customer-detail');
+    det.style.display = 'block';
+    document.getElementById('customer-detail-header').innerHTML = `
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div class="customer-avatar" style="width:36px;height:36px;font-size:13px;">${initials(c.full_name)}</div>
+        <div>
+          <h3 class="card-title">${c.full_name}</h3>
+          <p class="card-sub">${c.customer_id} · ${c.country}</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:6px;">
+        ${tierPill(c.risk_tier)}
+        ${c.status === 'blocked' ? '<span class="pill pill-critical pill-dot">Blocked</span>' : '<span class="pill pill-low pill-dot">Active</span>'}
+      </div>
+    `;
+
+    const hitsHtml = c.screening_hits.length === 0
+      ? `<div class="empty" style="padding:14px;">No screening hits.</div>`
+      : c.screening_hits.map(h => `
+        <div class="hit-item">
+          <div class="hit-icon ${h.severity}">!</div>
+          <div class="hit-body">
+            <div class="hit-list">${h.list}</div>
+            <div class="hit-match">${h.match}</div>
+          </div>
+          <span class="pill pill-${h.severity}">${h.severity}</span>
+        </div>`).join('');
+
+    const histHtml = c.history.slice().reverse().map(h => `
+      <div class="history-row">
+        <span class="history-time">${h.ts.slice(0,19).replace('T',' ')}</span>
+        <span class="history-action">${h.action}</span>
+        <span class="history-detail">${h.detail || ''} <span style="color:var(--text-3);">· by ${h.actor}</span></span>
+      </div>`).join('');
+
+    document.getElementById('customer-detail-body').innerHTML = `
+      <div class="grid-2">
+        <div>
+          <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:0 0 8px;">Customer profile</h4>
+          <table class="kv-table">
+            <tr><td>Full name</td><td>${c.full_name}</td></tr>
+            <tr><td>Date of birth</td><td>${c.dob}</td></tr>
+            <tr><td>Nationality</td><td>${c.nationality}</td></tr>
+            <tr><td>Country</td><td>${c.country}</td></tr>
+            <tr><td>ID type</td><td>${c.id_type}</td></tr>
+            <tr><td>ID number</td><td class="mono">${c.id_number}</td></tr>
+            <tr><td>Occupation</td><td>${c.occupation || '—'}</td></tr>
+            <tr><td>Industry</td><td>${c.industry || '—'}</td></tr>
+            <tr><td>Source of funds</td><td>${c.source_of_funds || '—'}</td></tr>
+            <tr><td>Expected vol/mo</td><td class="mono">${fmtAmount(c.expected_monthly_volume || 0)}</td></tr>
+          </table>
+
+          <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:16px 0 8px;">Risk assessment</h4>
+          <table class="kv-table">
+            <tr><td>Risk score</td><td class="mono">${c.risk_score.toFixed(3)}</td></tr>
+            <tr><td>Risk tier</td><td>${tierPill(c.risk_tier)}</td></tr>
+            <tr><td>CDD track</td><td>${c.cdd_track}</td></tr>
+            <tr><td>Next review</td><td>${c.review_due.slice(0,10)}</td></tr>
+          </table>
+
+          <div class="btn-row" style="margin-top:14px;">
+            <button class="btn-sm" onclick="rescreenCustomer('${c.customer_id}')">Re-screen now</button>
+            <button class="btn-sm" onclick="triggerCDD('${c.customer_id}')">Trigger CDD review</button>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:0 0 8px;">
+            Screening hits (${c.screening_hits.length})
+          </h4>
+          ${hitsHtml}
+
+          <h4 style="font-size:11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); font-weight:600; margin:16px 0 8px;">
+            Activity history
+          </h4>
+          <div class="scrollable" style="max-height: 240px;">${histHtml}</div>
+        </div>
+      </div>
+    `;
+    det.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    showToast('Failed to load customer: ' + e.message);
+  }
+}
+
+async function rescreenCustomer(cust_id) {
+  try {
+    const c = await api('/api/kyc/screen', { method: 'POST', body: JSON.stringify({ customer_id: cust_id, actor: 'analyst' }) });
+    logAudit('analyst', 'customer re-screened', `${cust_id} · tier now ${c.risk_tier}`);
+    showToast(`Re-screened · risk tier: ${c.risk_tier}`);
+    await loadCustomers();
+    openCustomer(cust_id);
+  } catch (e) { showToast('Re-screen failed: ' + e.message); }
+}
+
+async function triggerCDD(cust_id) {
+  const reason = prompt('Reason for CDD review:', 'Periodic review');
+  if (!reason) return;
+  try {
+    await api('/api/kyc/cdd', { method: 'POST', body: JSON.stringify({ customer_id: cust_id, reason, actor: 'analyst' }) });
+    logAudit('analyst', 'CDD triggered', `${cust_id} · ${reason}`);
+    showToast('CDD queued');
+    openCustomer(cust_id);
+  } catch (e) { showToast('CDD trigger failed: ' + e.message); }
+}
+
+// Transactions
 function generateSyntheticData(n = 300) {
   const currencies = ['US dollar', 'Euro', 'UK pounds', 'Swiss franc', 'Indian rupee', 'Naira', 'Yuan', 'Dirham', 'Turkish lira'];
   const locations = ['UK', 'USA', 'Germany', 'Japan', 'Switzerland', 'India', 'France', 'Singapore', 'Australia', 'China', 'Italy', 'Spain', 'Mexico'];
@@ -622,11 +1625,11 @@ function generateSyntheticData(n = 300) {
   return rows;
 }
 
-function loadDemoData() {
+function loadDemoTransactions() {
   STATE.rows = generateSyntheticData(300);
   logAudit('system', 'data ingested', `synthetic dataset (${STATE.rows.length} rows)`);
   showValidation();
-  setStep(2, 'active');
+  setStep(2);
   goto('ingestion');
 }
 
@@ -635,24 +1638,24 @@ function showValidation() {
   document.getElementById('ingestion-preview').style.display = 'block';
   const requiredCols = ['Amount','Payment_type','Sender_bank_location','Receiver_bank_location','Payment_currency','Received_currency'];
   const sample = STATE.rows[0] || {};
-  const checks = requiredCols.map(c => ({ name: `Required column: ${c}`, ok: c in sample }));
-  checks.push({ name: `Row count: ${STATE.rows.length}`, ok: STATE.rows.length > 0 });
-  checks.push({ name: 'Type validation (numeric Amount)', ok: typeof sample.Amount === 'number' });
+  const checks = requiredCols.map(c => ({ name: `Required column · ${c}`, ok: c in sample }));
+  checks.push({ name: `Row count · ${STATE.rows.length}`, ok: STATE.rows.length > 0 });
+  checks.push({ name: 'Amount field type (numeric)', ok: typeof sample.Amount === 'number' });
   checks.push({ name: 'PII screening (no PII fields detected)', ok: true });
 
   document.getElementById('validation-list').innerHTML = checks.map(c => `
-    <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:0.5px solid var(--border);">
-      <span>${c.name}</span>
-      <span class="pill ${c.ok ? 'pill-low' : 'pill-high'}">${c.ok ? 'pass' : 'fail'}</span>
+    <div style="display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid var(--border);">
+      <span style="color:var(--text-1);">${c.name}</span>
+      <span class="pill ${c.ok ? 'pill-low' : 'pill-critical'}">${c.ok ? 'pass' : 'fail'}</span>
     </div>`).join('');
   document.getElementById('ing-prog').style.width = '100%';
   document.getElementById('ingestion-summary').innerHTML =
-    `<div style="font-size:12px;color:var(--text-2);margin-top:10px;">${STATE.rows.length} rows ready for scoring</div>`;
+    `<div style="font-size:11px;color:var(--text-2);margin-top:10px;">${STATE.rows.length} rows validated and ready for scoring</div>`;
 
   const cols = ['id','Date','Sender_account','Receiver_account','Amount','Payment_currency','Sender_bank_location','Receiver_bank_location','Payment_type'];
   const t = document.getElementById('preview-table');
   t.innerHTML = `<thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead>
-    <tbody>${STATE.rows.slice(0,5).map(r => `<tr>${cols.map(c => `<td>${c==='Amount' ? fmtAmount(r[c] || 0) : (r[c] ?? '—')}</td>`).join('')}</tr>`).join('')}</tbody>`;
+    <tbody>${STATE.rows.slice(0,5).map(r => `<tr>${cols.map(c => `<td class="${c==='Amount'||c.includes('account')||c==='id'?'mono':''}">${c==='Amount' ? fmtAmount(r[c] || 0) : (r[c] ?? '—')}</td>`).join('')}</tr>`).join('')}</tbody>`;
   document.getElementById('m-ingested').textContent = STATE.rows.length;
 }
 
@@ -660,7 +1663,7 @@ async function runDetection() {
   const btn = document.getElementById('btn-run-detection');
   const status = document.getElementById('scoring-status');
   btn.disabled = true;
-  status.innerHTML = '<span class="spinner"></span>scoring with random forest…';
+  status.innerHTML = '<span class="spinner"></span> scoring with random forest…';
 
   try {
     const t0 = performance.now();
@@ -672,17 +1675,13 @@ async function runDetection() {
     const scoreById = {};
     r.results.forEach(x => { scoreById[x.id] = x.score; });
     STATE.scored = STATE.rows.map(row => ({
-      ...row,
-      score: scoreById[row.id] ?? 0,
-      status: 'pending',
-      explanation: null,
+      ...row, score: scoreById[row.id] ?? 0, status: 'pending', explanation: null,
     }));
     applyThreshold();
-    logAudit('detection_engine', 'scored batch',
-      `${STATE.scored.length} txs · model rf_aml_v1 · ${dt}s`);
-    setStep(3, 'active');
-    showToast(`Detection complete · ${STATE.scored.length} transactions scored in ${dt}s`);
-    status.textContent = `done in ${dt}s`;
+    logAudit('detection_engine', 'batch scored', `${STATE.scored.length} txs · rf_aml_v1 · ${dt}s`);
+    setStep(3);
+    showToast(`Detection complete · ${STATE.scored.length} scored in ${dt}s`);
+    status.textContent = `Completed in ${dt}s`;
     btn.disabled = false;
     goto('alerts');
   } catch (e) {
@@ -698,8 +1697,8 @@ function applyThreshold() {
   STATE.alerts.sort((a, b) => b.score - a.score);
 
   document.getElementById('m-alerts').textContent = STATE.alerts.length;
-  document.getElementById('m-pending').textContent = STATE.alerts.filter(a => a.status === 'pending').length;
-  document.getElementById('alert-badge').textContent = STATE.alerts.length || '';
+  document.getElementById('m-pending').textContent = `${STATE.alerts.filter(a => a.status === 'pending').length} pending review`;
+  document.getElementById('alert-badge').textContent = STATE.alerts.length || '0';
   const auto = STATE.scored.length - STATE.alerts.length;
   document.getElementById('t-auto').textContent = auto;
   document.getElementById('t-alert').textContent = STATE.alerts.length;
@@ -721,7 +1720,7 @@ function applyThreshold() {
     const fpr  = fp + tn > 0 ? fp / (fp + tn) : 0;
 
     document.getElementById('m-fpr').textContent = (fpr * 100).toFixed(1) + '%';
-    document.getElementById('m-fpr-delta').textContent = `industry baseline >90%`;
+    document.getElementById('m-fpr-delta').textContent = `vs industry >90%`;
     document.getElementById('t-fpr').textContent = (fpr * 100).toFixed(1) + '%';
     document.getElementById('t-recall').textContent = (rec * 100).toFixed(1) + '%';
     document.getElementById('met-prec').textContent = prec.toFixed(3);
@@ -732,11 +1731,10 @@ function applyThreshold() {
     document.getElementById('cm-fp').textContent = fp;
     document.getElementById('cm-fn').textContent = fn;
     document.getElementById('cm-tp').textContent = tp;
-
     computeFairness(labelled, thr);
   }
   renderAlerts();
-  logAudit('analyst', 'threshold applied', `cut-off = ${thr.toFixed(2)} · ${STATE.alerts.length} alerts raised`);
+  logAudit('analyst', 'threshold applied', `cut-off = ${thr.toFixed(2)} · ${STATE.alerts.length} alerts`);
 }
 
 function computeFairness(rows, thr) {
@@ -744,11 +1742,10 @@ function computeFairness(rows, thr) {
     ['USD payments', r => r.Payment_currency === 'US dollar'],
     ['Cross-border', r => r.Sender_bank_location !== r.Receiver_bank_location],
     ['Cash transactions', r => (r.Payment_type || '').includes('Cash')],
-    ['Wire/ACH transfers', r => r.Payment_type === 'ACH' || r.Payment_type === 'Cross-border'],
+    ['Wire/ACH', r => r.Payment_type === 'ACH' || r.Payment_type === 'Cross-border'],
     ['High-risk jurisdiction', r => ['UAE','Nigeria','Morocco','Pakistan'].includes(r.Sender_bank_location) || ['UAE','Nigeria','Morocco','Pakistan'].includes(r.Receiver_bank_location)],
   ];
-  const tbody = document.getElementById('fairness-body');
-  tbody.innerHTML = segs.map(([name, pred]) => {
+  document.getElementById('fairness-body').innerHTML = segs.map(([name, pred]) => {
     const sub = rows.filter(pred);
     let tp = 0, fp = 0, fn = 0, tn = 0;
     for (const r of sub) {
@@ -762,9 +1759,9 @@ function computeFairness(rows, thr) {
     const fpr = fp + tn > 0 ? (fp / (fp + tn) * 100).toFixed(1) + '%' : '—';
     const rec = tp + fn > 0 ? (tp / (tp + fn) * 100).toFixed(1) + '%' : '—';
     const status = sub.length === 0 ? '<span class="pill pill-neutral">no data</span>'
-                  : (fp/(fp+tn||1) > 0.3 ? '<span class="pill pill-med">review</span>'
-                  : '<span class="pill pill-low">OK</span>');
-    return `<tr><td>${name}</td><td>${sub.length}</td><td>${fpr}</td><td>${rec}</td><td>${status}</td></tr>`;
+                  : (fp/(fp+tn||1) > 0.3 ? '<span class="pill pill-medium pill-dot">review</span>'
+                  : '<span class="pill pill-low pill-dot">OK</span>');
+    return `<tr><td>${name}</td><td class="mono">${sub.length}</td><td class="mono">${fpr}</td><td class="mono">${rec}</td><td>${status}</td></tr>`;
   }).join('');
 }
 
@@ -776,34 +1773,33 @@ function renderAlerts() {
     return;
   }
   document.getElementById('queue-summary').textContent =
-    `${STATE.alerts.length} alerts · ${STATE.alerts.filter(a => a.status === 'pending').length} pending review · sorted by risk score`;
-  wrap.innerHTML = `
-    <div style="overflow-x:auto;"><table>
-      <thead><tr><th>ID</th><th>Date</th><th>Sender → receiver</th><th>Amount</th>
-        <th>Corridor</th><th>Type</th><th>Score</th><th>Status</th></tr></thead>
-      <tbody>${STATE.alerts.slice(0, 80).map(a => `
-          <tr class="alert-row" data-id="${a.id}">
-            <td><span class="pill pill-info">${a.id}</span></td>
-            <td>${a.Date || '—'}</td>
-            <td>${a.Sender_account || '—'} → ${a.Receiver_account || '—'}</td>
-            <td>${fmtAmount(a.Amount || 0)} ${a.Payment_currency || ''}</td>
-            <td style="font-size:12px;color:var(--text-2);">${a.Sender_bank_location} → ${a.Receiver_bank_location}</td>
-            <td style="font-size:12px;color:var(--text-2);">${a.Payment_type}</td>
-            <td><span class="pill ${a.score > 0.75 ? 'pill-high' : a.score > 0.55 ? 'pill-med' : 'pill-low'}">${a.score.toFixed(2)}</span></td>
-            <td><span class="pill ${
-              a.status === 'TP' ? 'pill-high' : a.status === 'FP' ? 'pill-low' :
-              a.status === 'NEED' ? 'pill-med' : a.status === 'STR' ? 'pill-purple' : 'pill-neutral'
-            }">${a.status}</span></td>
-          </tr>`).join('')}</tbody>
-    </table></div>`;
-  document.querySelectorAll('.alert-row').forEach(r => {
-    r.addEventListener('click', () => openAlert(r.dataset.id));
-  });
+    `${STATE.alerts.length} alerts · ${STATE.alerts.filter(a => a.status === 'pending').length} pending review · sorted by score (desc)`;
+  wrap.innerHTML = `<div style="overflow-x:auto;"><table>
+    <thead><tr><th>ID</th><th>Date</th><th>Sender → receiver</th><th>Amount</th>
+      <th>Corridor</th><th>Type</th><th>Risk score</th><th>Status</th></tr></thead>
+    <tbody>${STATE.alerts.slice(0, 80).map(a => `
+        <tr class="clickable" data-id="${a.id}" onclick="openAlert('${a.id}')">
+          <td><span class="mono" style="font-size:11px;">${a.id}</span></td>
+          <td style="font-size:11px;">${a.Date || '—'}</td>
+          <td><span class="mono" style="font-size:11px;">${a.Sender_account || '—'} → ${a.Receiver_account || '—'}</span></td>
+          <td class="mono">${fmtAmount(a.Amount || 0)} <span style="color:var(--text-3);font-size:10px;">${a.Payment_currency || ''}</span></td>
+          <td style="font-size:11px;color:var(--text-2);">${a.Sender_bank_location} → ${a.Receiver_bank_location}</td>
+          <td style="font-size:11px;color:var(--text-2);">${a.Payment_type}</td>
+          <td>${scoreCell(a.score)}</td>
+          <td>${
+            a.status === 'TP' ? '<span class="pill pill-critical">confirmed</span>' :
+            a.status === 'FP' ? '<span class="pill pill-low">cleared</span>' :
+            a.status === 'NEED' ? '<span class="pill pill-medium">review</span>' :
+            a.status === 'STR' ? '<span class="pill pill-info">STR</span>' :
+            '<span class="pill pill-neutral">pending</span>'
+          }</td>
+        </tr>`).join('')}</tbody>
+  </table></div>`;
 }
 
 async function openAlert(id) {
-  document.querySelectorAll('.alert-row').forEach(r => r.classList.remove('selected'));
-  document.querySelector(`.alert-row[data-id="${id}"]`)?.classList.add('selected');
+  document.querySelectorAll('tr.clickable').forEach(r => r.classList.remove('selected'));
+  document.querySelector(`tr[data-id="${id}"]`)?.classList.add('selected');
   const a = STATE.alerts.find(x => x.id === id);
   if (!a) return;
   STATE.selectedAlert = id;
@@ -811,21 +1807,21 @@ async function openAlert(id) {
   document.getElementById('alert-id-pill').textContent = a.id;
 
   document.getElementById('alert-fields').innerHTML = `
-    <tr><td style="color:var(--text-2);width:140px;">Date</td><td>${a.Date || '—'} ${a.Time || ''}</td></tr>
-    <tr><td style="color:var(--text-2);">Sender</td><td>${a.Sender_account || '—'} (${a.Sender_bank_location})</td></tr>
-    <tr><td style="color:var(--text-2);">Receiver</td><td>${a.Receiver_account || '—'} (${a.Receiver_bank_location})</td></tr>
-    <tr><td style="color:var(--text-2);">Amount</td><td>${fmtAmount(a.Amount || 0)} ${a.Payment_currency} → ${a.Received_currency}</td></tr>
-    <tr><td style="color:var(--text-2);">Payment type</td><td>${a.Payment_type}</td></tr>
-    <tr><td style="color:var(--text-2);">Risk score</td><td><span class="pill ${a.score > 0.75 ? 'pill-high' : a.score > 0.55 ? 'pill-med' : 'pill-low'}">${a.score.toFixed(3)}</span></td></tr>`;
+    <tr><td>Date / time</td><td>${a.Date || '—'} ${a.Time || ''}</td></tr>
+    <tr><td>Sender</td><td><span class="mono">${a.Sender_account || '—'}</span> · ${a.Sender_bank_location}</td></tr>
+    <tr><td>Receiver</td><td><span class="mono">${a.Receiver_account || '—'}</span> · ${a.Receiver_bank_location}</td></tr>
+    <tr><td>Amount</td><td class="mono">${fmtAmount(a.Amount || 0)} ${a.Payment_currency} → ${a.Received_currency}</td></tr>
+    <tr><td>Payment type</td><td>${a.Payment_type}</td></tr>
+    <tr><td>Risk score</td><td>${scoreCell(a.score)}</td></tr>
+  `;
 
-  document.getElementById('shap-panel').innerHTML = '<div class="empty"><span class="spinner"></span>computing contributions…</div>';
+  document.getElementById('shap-panel').innerHTML = '<div class="empty"><span class="spinner"></span> Computing contributions…</div>';
   document.getElementById('reason-text').textContent = '';
   document.getElementById('counterfactual-text').textContent = '';
 
   try {
     const exp = a.explanation || await api('/api/explain', {
-      method: 'POST',
-      body: JSON.stringify({ transaction: a }),
+      method: 'POST', body: JSON.stringify({ transaction: a }),
     });
     a.explanation = exp;
     document.getElementById('reason-text').textContent = exp.plain_reason;
@@ -834,8 +1830,8 @@ async function openAlert(id) {
     const max = Math.max(...exp.contributions.map(c => Math.abs(c.weight)), 0.001);
     document.getElementById('shap-panel').innerHTML = exp.contributions.map(c => {
       const pct = Math.abs(c.weight) / max * 100;
-      return `<div class="shap-bar">
-        <div class="shap-name">${c.feature}: ${c.value}</div>
+      return `<div class="shap-row">
+        <div class="shap-name">${c.feature}<br><b>${c.value}</b></div>
         <div class="shap-track"><div class="shap-fill ${c.type === 'neg' ? 'neg' : ''}" style="width:${pct}%;"></div></div>
         <div class="shap-val">${c.type === 'neg' ? '−' : '+'}${Math.abs(c.weight).toFixed(3)}</div>
       </div>`;
@@ -847,7 +1843,7 @@ async function openAlert(id) {
   document.getElementById('fb-decision').value = '';
   document.getElementById('fb-reason').value = '';
   document.getElementById('fb-note').value = '';
-  logAudit('analyst', 'alert opened', `${a.id} (score ${a.score.toFixed(2)})`);
+  logAudit('analyst', 'alert opened', `${a.id} · score ${a.score.toFixed(2)}`);
 }
 
 function submitFeedback() {
@@ -856,16 +1852,16 @@ function submitFeedback() {
   const decision = document.getElementById('fb-decision').value;
   const reason = document.getElementById('fb-reason').value;
   const note = document.getElementById('fb-note').value;
-  if (!decision) { showToast('Please select a decision'); return; }
-  if (!reason) { showToast('Please select a reason code'); return; }
+  if (!decision) { showToast('Select a decision first'); return; }
+  if (!reason) { showToast('Select a reason code'); return; }
   const a = STATE.alerts.find(x => x.id === id);
   a.status = decision;
   STATE.feedback[id] = { decision, reason, note, ts: new Date().toISOString() };
-  logAudit('analyst', 'feedback submitted', `${id} → ${decision} · "${reason}"${note ? ' · note attached' : ''}`);
+  logAudit('analyst', 'feedback submitted', `${id} → ${decision} · "${reason}"${note ? ' · note' : ''}`);
   renderAlerts();
-  document.getElementById('m-pending').textContent = STATE.alerts.filter(a => a.status === 'pending').length;
-  showToast(`Feedback recorded · written to feedback store for retraining`);
-  setStep(5, 'active');
+  document.getElementById('m-pending').textContent = `${STATE.alerts.filter(a => a.status === 'pending').length} pending review`;
+  showToast(`Feedback recorded · routed to retraining store`);
+  setStep(5);
 }
 
 function escalateAlert() {
@@ -875,7 +1871,7 @@ function escalateAlert() {
   a.status = 'STR';
   logAudit('analyst', 'escalated to STR', `${id} routed to STR generator`);
   renderAlerts();
-  showToast('Escalated · STR draft generated and queued for supervisor approval');
+  showToast('Escalated to STR · supervisor approval required');
 }
 
 function exportAlertsCSV() {
@@ -889,7 +1885,7 @@ function exportAlertsCSV() {
 }
 
 function exportAuditCSV() {
-  if (STATE.audit.length === 0) { showToast('Nothing to export yet'); return; }
+  if (STATE.audit.length === 0) { showToast('Nothing to export'); return; }
   const csv = ['timestamp,actor,event,details'].concat(
     STATE.audit.map(e => [e.ts, e.actor, e.event, e.details].map(s => JSON.stringify(s)).join(','))
   ).join('\n');
@@ -901,6 +1897,9 @@ function exportPack() {
     generated: new Date().toISOString(),
     model: STATE.modelMeta,
     threshold: STATE.threshold,
+    customers: STATE.customers.length,
+    alerts_in_pack: STATE.alerts.length,
+    feedback_count: Object.keys(STATE.feedback).length,
     artifacts: {
       model_card: { status: 'generated', maps_to: ['FEAT-T', 'AIRM 6.3.16'] },
       fairness_report: { status: 'generated', maps_to: ['FEAT-F', 'AIRM 6.3.15'] },
@@ -909,8 +1908,6 @@ function exportPack() {
       risk_materiality: { status: 'generated', tier: 'medium', maps_to: ['AIRM 5.3'] },
       compensatory_test: { status: 'generated', maps_to: ['AIRM 7.2.2(a)'] },
     },
-    alerts_in_pack: STATE.alerts.length,
-    feedback_count: Object.keys(STATE.feedback).length,
   };
   download('counter_ai_compliance_pack.json', JSON.stringify(pack, null, 2));
   logAudit('compliance', 'exported regulator pack', 'all artifacts bundled');
@@ -935,26 +1932,24 @@ function renderAudit() {
   }
   list.innerHTML = STATE.audit.slice(0, 200).map(e => `
     <div class="audit-row">
-      <div class="audit-time">${e.ts}</div>
-      <div class="audit-actor">${e.actor}</div>
-      <div class="audit-event"><b>${e.event}</b>${e.details ? ' — ' + e.details : ''}</div>
+      <span class="audit-time">${e.ts}</span>
+      <span class="audit-actor">${e.actor}</span>
+      <span class="audit-event"><b>${e.event}</b>${e.details ? ' — ' + e.details : ''}</span>
     </div>`).join('');
   document.getElementById('audit-count').textContent = STATE.audit.length;
 }
 
-function renderFeatureImportances(health) {
-  const list = document.getElementById('feature-imp-list');
-  if (!health) { list.innerHTML = '<div class="empty">model offline</div>'; return; }
+function renderFeatureImportances() {
   const features = [
-    ['Payment_type (block 0-6)', 0.427],
-    ['Payment_currency (block 503-515)', 0.257],
-    ['Sender_bank_location (block 337-353)', 0.219],
+    ['Payment_type (block 0–6)', 0.427],
+    ['Payment_currency (block 503–515)', 0.257],
+    ['Sender_bank_location (block 337–353)', 0.219],
     ['Amount (feature 542)', 0.065],
-    ['Sender_account (block 7-336)', 0.017],
-    ['Receiver_account (block 354-502)', 0.015],
+    ['Sender_account (block 7–336)', 0.017],
+    ['Receiver_account (block 354–502)', 0.015],
   ];
   const max = features[0][1];
-  list.innerHTML = features.map(([n, v]) => `
+  document.getElementById('feature-imp-list').innerHTML = features.map(([n, v]) => `
     <div class="feature-imp-row">
       <div class="feature-imp-name">${n}</div>
       <div class="feature-imp-track"><div class="feature-imp-fill" style="width:${v/max*100}%"></div></div>
@@ -962,6 +1957,7 @@ function renderFeatureImportances(health) {
     </div>`).join('');
 }
 
+// File upload
 const dz = document.getElementById('dropzone');
 const fi = document.getElementById('fileInput');
 ['dragover', 'dragenter'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
@@ -996,7 +1992,7 @@ function handleFile(file) {
     STATE.rows = rows;
     logAudit('system', 'data ingested', `uploaded ${file.name} (${rows.length} rows)`);
     showValidation();
-    setStep(2, 'active');
+    setStep(2);
   };
   reader.readAsText(file);
 }
@@ -1017,14 +2013,14 @@ async function fitSchema() {
   const f = document.getElementById('fit-file').files[0];
   if (!f) { showToast('Choose a CSV first'); return; }
   const status = document.getElementById('fit-status');
-  status.innerHTML = '<span class="spinner"></span>fitting…';
+  status.innerHTML = '<span class="spinner"></span> fitting…';
   const fd = new FormData();
   fd.append('file', f);
   try {
     const res = await fetch(API + '/api/fit-schema', { method: 'POST', body: fd });
     const j = await res.json();
     if (!res.ok) throw new Error(j.error || 'failed');
-    status.textContent = `fit complete · mean=${j.amount_mean.toFixed(0)}, std=${j.amount_std.toFixed(0)}`;
+    status.textContent = `fit complete · mean=${j.amount_mean.toFixed(0)} std=${j.amount_std.toFixed(0)}`;
     logAudit('admin', 'schema fitted', `${f.name} (${j.n_rows_seen} rows)`);
     showToast('Schema updated');
   } catch (e) {
@@ -1040,7 +2036,7 @@ document.getElementById('threshold').addEventListener('input', e => {
 document.getElementById('btn-run-detection').addEventListener('click', runDetection);
 
 renderAudit();
-setStep(1, 'active');
+setStep(1);
 checkHealth();
 </script>
 
