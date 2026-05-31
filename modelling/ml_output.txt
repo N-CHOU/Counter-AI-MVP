@@ -1,0 +1,68 @@
+Approach 1: Class Weights
+
+Checking y distribution:
+
+Overall y:
+Is_laundering
+0    0.998961
+1    0.001039
+Name: proportion, dtype: float64
+
+Train Set:
+Is_laundering
+0    0.998981
+1    0.001019
+Name: proportion, dtype: float64
+
+Test Set:
+Is_laundering
+0    0.99884
+1    0.00116
+Name: proportion, dtype: float64
+[0]	validation_0-aucpr:0.00965
+[50]	validation_0-aucpr:0.55499
+[100]	validation_0-aucpr:0.79596
+[150]	validation_0-aucpr:0.87584
+[200]	validation_0-aucpr:0.88924
+[250]	validation_0-aucpr:0.89315
+[300]	validation_0-aucpr:0.89837
+[350]	validation_0-aucpr:0.90226
+[400]	validation_0-aucpr:0.90555
+[450]	validation_0-aucpr:0.90681
+[500]	validation_0-aucpr:0.90874
+[550]	validation_0-aucpr:0.90983
+[600]	validation_0-aucpr:0.91048
+[650]	validation_0-aucpr:0.91081
+[700]	validation_0-aucpr:0.91182
+[750]	validation_0-aucpr:0.91286
+[800]	validation_0-aucpr:0.91377
+[850]	validation_0-aucpr:0.91398
+[900]	validation_0-aucpr:0.91480
+[950]	validation_0-aucpr:0.91510
+[1000]	validation_0-aucpr:0.91588
+[1050]	validation_0-aucpr:0.91590
+[1070]	validation_0-aucpr:0.91580
+
+XGBoost Accuracy:
+0.9998484985575801
+
+XGBoost Confusion Matrix:
+[[9.99990520e-01 9.47984112e-06]
+ [1.22393472e-01 8.77606528e-01]]
+
+XGBoost Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00    949383
+           1       0.99      0.88      0.93      1103
+
+    accuracy                           1.00    950486
+   macro avg       1.00      0.94      0.97    950486
+weighted avg       1.00      1.00      1.00    950486
+
+
+XGBoost PR-AUC:
+0.9190974304257277
+
+
+Script took 19.15 minutes to run.
